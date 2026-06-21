@@ -10,10 +10,61 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
+    :root {
+      --bg-1: #020617;
+      --bg-2: #0f172a;
+      --bg-3: #111827;
+      --panel: rgba(15, 23, 42, 0.78);
+      --panel-2: rgba(17, 24, 39, 0.88);
+      --border-soft: rgba(148, 163, 184, 0.16);
+      --text-soft: #94a3b8;
+      --primary: #38bdf8;
+      --primary-2: #2563eb;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
     body {
       margin: 0;
-      background: #0f172a;
+      min-height: 100vh;
       color: #f8fafc;
+      position: relative;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.22), transparent 0 25%),
+        radial-gradient(circle at 88% 15%, rgba(99, 102, 241, 0.20), transparent 0 24%),
+        radial-gradient(circle at 50% 85%, rgba(14, 165, 233, 0.12), transparent 0 28%),
+        linear-gradient(135deg, #020617 0%, #081225 30%, #0b1730 58%, #111827 100%);
+      background-attachment: fixed;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      border-radius: 999px;
+      filter: blur(80px);
+      pointer-events: none;
+      opacity: .55;
+    }
+
+    body::before {
+      width: 320px;
+      height: 320px;
+      top: 80px;
+      left: -60px;
+      background: rgba(56, 189, 248, 0.24);
+    }
+
+    body::after {
+      width: 380px;
+      height: 380px;
+      right: -80px;
+      bottom: 30px;
+      background: rgba(59, 130, 246, 0.18);
     }
 
     button,
@@ -28,17 +79,36 @@
       display: grid;
       place-items: center;
       padding: 20px;
-      background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+      position: relative;
+      background:
+        linear-gradient(rgba(2, 6, 23, 0.20), rgba(2, 6, 23, 0.30));
+    }
+
+    .login::before {
+      content: "";
+      position: absolute;
+      width: min(520px, 70vw);
+      height: min(520px, 70vw);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 68%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      filter: blur(16px);
     }
 
     .login-card {
       width: 100%;
-      max-width: 420px;
-      background: #111827;
+      max-width: 440px;
+      position: relative;
+      background: rgba(15, 23, 42, 0.76);
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 24px;
-      padding: 28px;
-      box-shadow: 0 25px 60px rgba(0,0,0,.35);
+      padding: 30px;
+      box-shadow: 0 25px 70px rgba(2, 6, 23, 0.52);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
     }
 
     .logo-box {
@@ -60,6 +130,7 @@
       font-size: 20px;
       overflow: hidden;
       flex: 0 0 48px;
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.35);
     }
 
     .logo.clickable {
@@ -69,7 +140,8 @@
     }
 
     .logo.clickable:hover {
-      opacity: .9;
+      opacity: .92;
+      transform: translateY(-1px);
     }
 
     .logo img {
@@ -88,7 +160,7 @@
     }
 
     .muted {
-      color: #94a3b8;
+      color: var(--text-soft);
       font-size: 14px;
     }
 
@@ -103,12 +175,21 @@
     select,
     textarea {
       width: 100%;
-      background: #020617;
+      background: rgba(2, 6, 23, 0.82);
       color: #f8fafc;
       border: 1px solid rgba(255,255,255,.14);
       border-radius: 12px;
       padding: 11px 12px;
       outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(56, 189, 248, 0.55);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16);
+      background: rgba(2, 6, 23, 0.96);
     }
 
     textarea {
@@ -122,23 +203,29 @@
       border-radius: 12px;
       cursor: pointer;
       font-weight: 700;
-      background: #38bdf8;
+      background: linear-gradient(135deg, #38bdf8, #60a5fa);
       color: #082f49;
+      box-shadow: 0 12px 24px rgba(56, 189, 248, 0.18);
+      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
     }
 
     .btn:hover {
-      opacity: .9;
+      opacity: .96;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(56, 189, 248, 0.24);
     }
 
     .btn.secondary {
-      background: #1f2937;
+      background: rgba(31, 41, 55, 0.92);
       color: #f8fafc;
       border: 1px solid rgba(255,255,255,.12);
+      box-shadow: none;
     }
 
     .btn.danger {
-      background: #ef4444;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
       color: white;
+      box-shadow: none;
     }
 
     .btn.small {
@@ -150,11 +237,12 @@
     .app {
       display: flex;
       min-height: 100vh;
+      position: relative;
     }
 
     .sidebar {
       width: 260px;
-      background: #020617;
+      background: rgba(2, 6, 23, 0.76);
       border-right: 1px solid rgba(255,255,255,.10);
       padding: 20px;
       position: fixed;
@@ -162,6 +250,9 @@
       bottom: 0;
       left: 0;
       overflow-y: auto;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 18px 0 45px rgba(2, 6, 23, 0.34);
     }
 
     .sidebar h1 {
@@ -184,18 +275,22 @@
       border-radius: 12px;
       cursor: pointer;
       font-size: 15px;
+      transition: background .2s ease, color .2s ease, transform .2s ease;
     }
 
     .nav button:hover,
     .nav button.active {
       background: rgba(56,189,248,.15);
       color: white;
+      transform: translateX(2px);
     }
 
     .main {
       margin-left: 260px;
       width: calc(100% - 260px);
+      min-height: 100vh;
       padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
     }
 
     .top {
@@ -222,11 +317,13 @@
     }
 
     .card {
-      background: #111827;
+      background: rgba(15, 23, 42, 0.76);
       border: 1px solid rgba(255,255,255,.10);
       border-radius: 18px;
       padding: 18px;
       box-shadow: 0 18px 40px rgba(0,0,0,.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
 
     .card-title {
@@ -338,6 +435,8 @@
       align-items: center;
       justify-content: center;
       padding: 18px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .modal {
@@ -345,10 +444,11 @@
       max-width: 760px;
       max-height: 92vh;
       overflow-y: auto;
-      background: #0f172a;
+      background: rgba(15, 23, 42, 0.92);
       border: 1px solid rgba(255,255,255,.14);
       border-radius: 22px;
       padding: 22px;
+      box-shadow: 0 25px 60px rgba(2, 6, 23, 0.40);
     }
 
     .form-grid {
@@ -374,6 +474,340 @@
       line-height: 1.5;
       margin-top: 14px;
     }
+
+
+    /* ===== FONDO NEÓN ANIMADO TIPO LED ===== */
+    .login {
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        radial-gradient(circle at 18% 14%, rgba(236, 72, 153, .22), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(34, 211, 238, .22), transparent 28%),
+        linear-gradient(135deg, #030712 0%, #0b1020 42%, #111827 100%);
+      background-size: 42px 42px, 42px 42px, auto, auto, auto;
+    }
+
+    .neon-wall {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .neon-wall::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(335deg, rgba(255,255,255,.055) 0 2px, transparent 2px 78px),
+        linear-gradient(25deg, rgba(255,255,255,.045) 0 2px, transparent 2px 78px),
+        linear-gradient(#141414 0 0);
+      background-size: 92px 44px, 92px 44px, auto;
+      opacity: .72;
+      mix-blend-mode: screen;
+    }
+
+    .neon-wall::after {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(236, 72, 153, .20), transparent 22%),
+        radial-gradient(circle at 82% 36%, rgba(34, 211, 238, .22), transparent 26%),
+        radial-gradient(circle at 45% 82%, rgba(59, 130, 246, .16), transparent 24%);
+      filter: blur(28px);
+      animation: neonAmbient 10s ease-in-out infinite alternate;
+    }
+
+    .neon-stage {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      z-index: 1;
+      opacity: .95;
+    }
+
+    .neon-frame {
+      position: relative;
+      width: min(820px, 86vw);
+      height: min(460px, 62vh);
+      border-radius: 24px;
+      border: 4px solid rgba(34, 211, 238, .78);
+      box-shadow:
+        0 0 10px rgba(34, 211, 238, .95),
+        0 0 32px rgba(34, 211, 238, .75),
+        inset 0 0 24px rgba(34, 211, 238, .35);
+      animation: cyanPulse 2.5s ease-in-out infinite;
+    }
+
+    .neon-frame::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 14px;
+      border: 4px solid rgba(236, 72, 153, .82);
+      box-shadow:
+        0 0 10px rgba(236, 72, 153, .96),
+        0 0 30px rgba(236, 72, 153, .72),
+        inset 0 0 22px rgba(236, 72, 153, .35);
+      animation: pinkPulse 2.2s ease-in-out infinite alternate;
+    }
+
+    .neon-frame::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 28px;
+      background:
+        linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent) top left / 30% 4px no-repeat,
+        linear-gradient(180deg, transparent, rgba(255,255,255,.95), transparent) top right / 4px 30% no-repeat,
+        linear-gradient(270deg, transparent, rgba(255,255,255,.95), transparent) bottom right / 30% 4px no-repeat,
+        linear-gradient(0deg, transparent, rgba(255,255,255,.95), transparent) bottom left / 4px 30% no-repeat;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,.85)) drop-shadow(0 0 14px rgba(34,211,238,.85));
+      animation: ledRun 4.2s linear infinite;
+    }
+
+    .neon-top-line,
+    .neon-bottom-line {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, #22d3ee, #fff, #ec4899, transparent);
+      background-size: 240% 100%;
+      box-shadow:
+        0 0 9px rgba(34, 211, 238, .95),
+        0 0 22px rgba(236, 72, 153, .70);
+      animation: ledSlide 2.8s linear infinite;
+    }
+
+    .neon-top-line {
+      top: calc(50% - min(460px, 62vh) / 2 - 18px);
+    }
+
+    .neon-bottom-line {
+      bottom: calc(50% - min(460px, 62vh) / 2 - 18px);
+      animation-direction: reverse;
+    }
+
+    .on-air {
+      position: absolute;
+      top: calc(50% - min(460px, 62vh) / 2 - 54px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 28px;
+      border: 3px solid rgba(34,211,238,.85);
+      border-radius: 10px;
+      background: rgba(15, 23, 42, .78);
+      color: #f9a8d4;
+      font-size: clamp(24px, 4vw, 42px);
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-shadow:
+        0 0 4px rgba(255,255,255,.9),
+        0 0 10px rgba(236,72,153,.95),
+        0 0 24px rgba(236,72,153,.8);
+      box-shadow:
+        0 0 12px rgba(34,211,238,.9),
+        0 0 30px rgba(34,211,238,.62),
+        inset 0 0 18px rgba(34,211,238,.20);
+      animation: onAirFlicker 3.2s infinite;
+    }
+
+    .login-card {
+      z-index: 3;
+      max-width: 420px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(2, 6, 23, .76), rgba(15, 23, 42, .58)),
+        linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.026) 1px, transparent 1px);
+      background-size: auto, 34px 34px, 34px 34px;
+      border: 1px solid rgba(34, 211, 238, .46);
+      box-shadow:
+        0 30px 90px rgba(0, 0, 0, .70),
+        0 0 22px rgba(34, 211, 238, .28),
+        0 0 46px rgba(236, 72, 153, .18),
+        inset 0 0 24px rgba(34, 211, 238, .08);
+    }
+
+    .login-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, #22d3ee, #ffffff, #ec4899, #22d3ee);
+      background-size: 240% 240%;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: cardBorder 4.5s linear infinite;
+      opacity: .88;
+    }
+
+    .login-card::after {
+      content: "";
+      position: absolute;
+      inset: -55%;
+      background: linear-gradient(115deg, transparent 38%, rgba(34,211,238,.15) 46%, rgba(236,72,153,.14) 52%, transparent 62%);
+      transform: translateX(-35%) rotate(8deg);
+      animation: cardSweep 5.5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .login-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-card h1 {
+      color: #ffffff;
+      text-shadow:
+        0 0 8px rgba(255,255,255,.28),
+        0 0 18px rgba(34,211,238,.38),
+        0 0 28px rgba(236,72,153,.22);
+    }
+
+    .login-card .muted {
+      color: #bae6fd;
+    }
+
+    .login-card label {
+      color: #e0f2fe;
+      text-shadow: 0 0 10px rgba(34,211,238,.22);
+    }
+
+    .login-card input {
+      background: rgba(2, 6, 23, .80);
+      border-color: rgba(34, 211, 238, .34);
+      box-shadow:
+        inset 0 0 18px rgba(0,0,0,.28),
+        0 0 14px rgba(34,211,238,.08);
+    }
+
+    .login-card input:focus {
+      border-color: rgba(236, 72, 153, .76);
+      box-shadow:
+        0 0 0 3px rgba(236, 72, 153, .16),
+        0 0 22px rgba(34,211,238,.20),
+        inset 0 0 18px rgba(0,0,0,.22);
+    }
+
+    .login-card .logo {
+      background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 45%, #ec4899 100%);
+      box-shadow:
+        0 0 14px rgba(34,211,238,.58),
+        0 0 26px rgba(236,72,153,.34);
+    }
+
+    .login-card .btn {
+      color: #031221;
+      background: linear-gradient(90deg, #22d3ee 0%, #60a5fa 48%, #ec4899 100%);
+      box-shadow:
+        0 0 18px rgba(34,211,238,.36),
+        0 0 30px rgba(236,72,153,.22);
+    }
+
+    .login-card .btn:hover {
+      box-shadow:
+        0 0 24px rgba(34,211,238,.48),
+        0 0 42px rgba(236,72,153,.30);
+    }
+
+    @keyframes cardBorder {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 240% 50%; }
+    }
+
+    @keyframes cardSweep {
+      0%, 100% { transform: translateX(-42%) rotate(8deg); opacity: .20; }
+      45%, 55% { transform: translateX(42%) rotate(8deg); opacity: .62; }
+    }
+
+    @keyframes ledSlide {
+      0% { background-position: 220% 0; opacity: .72; }
+      50% { opacity: 1; }
+      100% { background-position: -220% 0; opacity: .72; }
+    }
+
+    @keyframes ledRun {
+      0% {
+        background-position: -35% 0, 100% -35%, 135% 100%, 0 135%;
+      }
+      100% {
+        background-position: 135% 0, 100% 135%, -35% 100%, 0 -35%;
+      }
+    }
+
+    @keyframes cyanPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 10px rgba(34, 211, 238, .85),
+          0 0 30px rgba(34, 211, 238, .62),
+          inset 0 0 22px rgba(34, 211, 238, .28);
+      }
+      50% {
+        box-shadow:
+          0 0 14px rgba(255,255,255,.9),
+          0 0 44px rgba(34, 211, 238, .95),
+          inset 0 0 34px rgba(34, 211, 238, .42);
+      }
+    }
+
+    @keyframes pinkPulse {
+      0% {
+        opacity: .74;
+        box-shadow:
+          0 0 9px rgba(236, 72, 153, .75),
+          0 0 24px rgba(236, 72, 153, .58),
+          inset 0 0 20px rgba(236, 72, 153, .25);
+      }
+      100% {
+        opacity: 1;
+        box-shadow:
+          0 0 13px rgba(255,255,255,.82),
+          0 0 38px rgba(236, 72, 153, .90),
+          inset 0 0 30px rgba(236, 72, 153, .38);
+      }
+    }
+
+    @keyframes onAirFlicker {
+      0%, 18%, 21%, 26%, 100% { opacity: 1; }
+      20%, 24% { opacity: .66; }
+      72% { text-shadow: 0 0 5px #fff, 0 0 16px rgba(236,72,153,1), 0 0 32px rgba(236,72,153,.9); }
+    }
+
+    @keyframes neonAmbient {
+      0% { transform: translate3d(-2%, -1%, 0) scale(1); }
+      100% { transform: translate3d(2%, 2%, 0) scale(1.08); }
+    }
+
+    @media (max-width: 620px) {
+      .neon-frame {
+        width: 92vw;
+        height: 58vh;
+        opacity: .70;
+      }
+
+      .on-air {
+        top: 78px;
+        font-size: 24px;
+        padding: 8px 18px;
+      }
+
+      .neon-top-line,
+      .neon-bottom-line {
+        display: none;
+      }
+    }
+
 
     @media (max-width: 900px) {
       .app {
@@ -410,7 +844,151 @@
         display: block;
         overflow-x: auto;
       }
+
+      .login-card {
+        padding: 24px 20px;
+      }
     }
+
+
+    /* ===== AJUSTE DE LETRAS Y CONFIGURACIÓN DE FOTO ===== */
+    body,
+    button,
+    input,
+    select,
+    textarea,
+    h1,
+    h2,
+    h3,
+    p,
+    label,
+    .muted,
+    .nav button,
+    .card-title,
+    .big {
+      letter-spacing: normal;
+    }
+
+    .login-card {
+      max-width: min(500px, calc(100vw - 32px));
+      padding: 28px 30px;
+    }
+
+    .login-card .logo-box {
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .login-card h1 {
+      font-size: clamp(26px, 4.5vw, 34px);
+      line-height: 1.08;
+      margin: 0 0 7px;
+      letter-spacing: -0.7px;
+      text-shadow:
+        0 0 5px rgba(255,255,255,.34),
+        0 0 14px rgba(34,211,238,.32),
+        0 0 22px rgba(236,72,153,.18);
+      white-space: normal;
+    }
+
+    .login-card .muted {
+      line-height: 1.35;
+      font-size: 14px;
+    }
+
+    .login-card label {
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    .login-card .logo {
+      width: 56px;
+      height: 56px;
+      flex-basis: 56px;
+      border-radius: 17px;
+      font-size: 18px;
+    }
+
+    .config-profile {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid rgba(34, 211, 238, .28);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(34, 211, 238, .12), transparent 36%),
+        radial-gradient(circle at 100% 100%, rgba(236, 72, 153, .12), transparent 36%),
+        rgba(2, 6, 23, .34);
+      box-shadow: inset 0 0 24px rgba(34, 211, 238, .05);
+    }
+
+    .profile-preview-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 230px;
+    }
+
+    .profile-preview-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 68px;
+      overflow: hidden;
+      color: white;
+      font-size: 22px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 45%, #ec4899 100%);
+      box-shadow:
+        0 0 16px rgba(34,211,238,.42),
+        0 0 28px rgba(236,72,153,.25);
+    }
+
+    .profile-preview-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 620px) {
+      .login-card {
+        padding: 24px 20px;
+      }
+
+      .login-card .logo-box {
+        gap: 11px;
+      }
+
+      .login-card .logo {
+        width: 50px;
+        height: 50px;
+        flex-basis: 50px;
+      }
+
+      .config-profile {
+        display: block;
+      }
+
+      .profile-actions {
+        justify-content: flex-start;
+        margin-top: 14px;
+      }
+    }
+
   </style>
 </head>
 
@@ -717,6 +1295,30 @@
       return '<button class="logo clickable" onclick="abrirSelectorFoto()" title="Cambiar foto de perfil">SM</button>';
     }
 
+    function logoPerfilLogin() {
+      var foto = estado.config && estado.config.fotoPerfil ? estado.config.fotoPerfil : "";
+
+      if (foto) {
+        return '<div class="logo">' +
+          '<img src="' + texto(foto) + '" alt="Foto de perfil">' +
+        '</div>';
+      }
+
+      return '<div class="logo">SM</div>';
+    }
+
+    function vistaPreviaFotoPerfil() {
+      var foto = estado.config && estado.config.fotoPerfil ? estado.config.fotoPerfil : "";
+
+      if (foto) {
+        return '<div class="profile-preview-logo">' +
+          '<img src="' + texto(foto) + '" alt="Foto de perfil actual">' +
+        '</div>';
+      }
+
+      return '<div class="profile-preview-logo">SM</div>';
+    }
+
     function abrirSelectorFoto() {
       var input = document.getElementById("fotoPerfilInput");
       if (input) input.click();
@@ -813,9 +1415,16 @@
     function renderLogin() {
       document.getElementById("app").innerHTML =
         '<div class="login">' +
+          '<div class="neon-wall"></div>' +
+          '<div class="neon-stage">' +
+            '<div class="on-air">ON AIR</div>' +
+            '<div class="neon-frame"></div>' +
+            '<div class="neon-top-line"></div>' +
+            '<div class="neon-bottom-line"></div>' +
+          '</div>' +
           '<div class="login-card">' +
             '<div class="logo-box">' +
-              '<div class="logo">SM</div>' +
+              logoPerfilLogin() +
               '<div>' +
                 '<h1>Streaming Manager</h1>' +
                 '<p class="muted">Panel de control para cuentas de streaming</p>' +
@@ -1225,12 +1834,19 @@
               '<label>Moneda</label>' +
               '<input id="cfgMoneda" value="' + texto(estado.config.moneda) + '">' +
             '</div>' +
-          '</div>' +
-
-          '<br>' +
-          '<div class="actions">' +
-            '<button class="btn secondary" onclick="abrirSelectorFoto()">Cambiar foto de perfil</button>' +
-            '<button class="btn secondary" onclick="quitarFotoPerfil()">Quitar foto de perfil</button>' +
+            '<div class="config-profile">' +
+              '<div class="profile-preview-box">' +
+                vistaPreviaFotoPerfil() +
+                '<div>' +
+                  '<label>Foto de perfil del inicio</label>' +
+                  '<p class="muted" style="margin:0">Esta imagen se verá en el login y en el menú lateral.</p>' +
+                '</div>' +
+              '</div>' +
+              '<div class="profile-actions">' +
+                '<button type="button" class="btn secondary" onclick="abrirSelectorFoto()">Cambiar foto</button>' +
+                '<button type="button" class="btn secondary" onclick="quitarFotoPerfil()">Quitar foto</button>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
 
           '<br>' +
