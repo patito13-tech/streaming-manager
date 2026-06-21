@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Streaming Manager</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --panel2: #1f2937;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --green: #22c55e;
+      --yellow: #facc15;
+      --red: #ef4444;
+      --orange: #fb923c;
+      --border: rgba(255,255,255,.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #020617, #0f172a);
+      color: var(--text);
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: rgba(15, 23, 42, .95);
+      border-right: 1px solid var(--border);
+      padding: 20px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .nav button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 13px 14px;
+      text-align: left;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: rgba(56, 189, 248, .14);
+      color: var(--text);
+    }
+
+    .main {
+      margin-left: 260px;
+      width: calc(100% - 260px);
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .topbar p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .btn {
+      border: 0;
+      padding: 11px 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #00111c;
+      font-weight: bold;
+    }
+
+    .btn.secondary {
+      background: var(--panel2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn.danger {
+      background: var(--red);
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: rgba(17, 24, 39, .86);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 15px 30px rgba(0,0,0,.18);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .card .big {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: #020617;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .search {
+      max-width: 360px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: normal;
+      background: rgba(255,255,255,.03);
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .mini {
+      padding: 7px 9px;
+      border-radius: 9px;
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .active-badge {
+      background: rgba(34,197,94,.18);
+      color: #86efac;
+    }
+
+    .soon-badge {
+      background: rgba(250,204,21,.18);
+      color: #fde68a;
+    }
+
+    .expired-badge {
+      background: rgba(239,68,68,.2);
+      color: #fecaca;
+    }
+
+    .today-badge {
+      background: rgba(251,146,60,.2);
+      color: #fed7aa;
+    }
+
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 20;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 720px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal h3 {
+      margin-top: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 13px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 30px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .item span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .login {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(15, 23, 42, .93);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 25px 50px rgba(0,0,0,.35);
+    }
+
+    .login-card h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .login-card p {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        bottom: auto;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cards,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        display: block;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+  const STORAGE_KEY = "streaming_manager_data_v1";
+  const AUTH_KEY = "streaming_manager_auth_v1";
+
+  const seed = {
+    settings: {
+      business: "Streaming Manager",
+      admin: "Administrador",
+      currency: "S/",
+      phone: ""
+    },
+    accounts: [
+      {
+        id: crypto.randomUUID(),
+        service: "Netflix",
+        email: "cuenta1@email.com",
+        password: "123456",
+        profile: "Perfil 1",
+        pin: "0000",
+        screens: "4",
+        expiry: todayPlus(20),
+        cost: "35",
+        notes: "Cuenta demo"
+      },
+      {
+        id: crypto.randomUUID(),
+        service: "Disney+",
+        email: "disney@email.com",
+        password: "123456",
+        profile: "Perfil 2",
+        pin: "1111",
+        screens: "2",
+        expiry: todayPlus(12),
+        cost: "20",
+        notes: "Cuenta demo"
+      }
+    ],
+    clients: [
+      {
+        id: crypto.randomUUID(),
+        name: "Cliente Demo",
+        phone: "51999999999",
+        service: "Netflix",
+        accountId: "",
+        start: todayPlus(-10),
+        end: todayPlus(5),
+        price: "15",
+        notes: "Cliente de ejemplo"
+      }
+    ],
+    payments: []
+  };
+
+  let state = loadState();
+  let currentView = "dashboard";
+  let searchText = "";
+
+  function todayPlus(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function loadState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
+    return JSON.parse(JSON.stringify(seed));
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function money(value) {
+    const n = Number(value || 0);
+    return `${state.settings.currency} ${n.toFixed(2)}`;
+  }
+
+  function daysLeft(date) {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const end = new Date(date + "T00:00:00");
+    return Math.ceil((end - today) / 86400000);
+  }
+
+  function statusInfo(date) {
+    const d = daysLeft(date);
+    if (d < 0) return { text: "Vencido", cls: "expired-badge" };
+    if (d === 0) return { text: "Vence hoy", cls: "today-badge" };
+    if (d <= 5) return { text: `Vence en ${d} días`, cls: "soon-badge" };
+    return { text: "Activo", cls: "active-badge" };
+  }
+
+  function escapeHTML(text) {
+    return String(text ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function clientName(id) {
+    return state.clients.find(c => c.id === id)?.name || "Sin cliente";
+  }
+
+  function accountName(id) {
+    const a = state.accounts.find(x => x.id === id);
+    if (!a) return "Sin cuenta";
+    return `${a.service} - ${a.email}`;
+  }
+
+  function isLogged() {
+    return localStorage.getItem(AUTH_KEY) === "ok";
+  }
+
+  function login() {
+    const user = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value.trim();
+
+    if (user === "admin" && pass === "1234") {
+      localStorage.setItem(AUTH_KEY, "ok");
+      render();
+    } else {
+      alert("Usuario o contraseña incorrectos. Usa admin / 1234");
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem(AUTH_KEY);
+    render();
+  }
+
+  function renderLogin() {
+    document.getElementById("root").innerHTML = `
+      <div class="login">
+        <div class="login-card">
+          <div class="brand">
+            <div class="logo">SM</div>
+            <div>
+              <h1>Streaming Manager</h1>
+              <p>Panel de control para cuentas de streaming</p>
+            </div>
+          </div>
+
+          <label>Usuario</label>
+          <input id="loginUser" value="admin">
+
+          <br><br>
+
+          <label>Contraseña</label>
+          <input id="loginPass" type="password" value="1234">
+
+          <br><br>
+
+          <button class="btn" style="width:100%" onclick="login()">Ingresar</button>
+
+          <div class="hint">
+            Usuario demo: <b>admin</b><br>
+            Contraseña demo: <b>1234</b><br><br>
+            Los datos se guardan en este navegador usando almacenamiento local.
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function render() {
+    if (!isLogged()) {
+      renderLogin();
+      return;
+    }
+
+    document.getElementById("root").innerHTML = `
+      <div class="app">
+        <aside class="sidebar">
+          <div class="brand">
+            <div class="logo">SM</div>
+            <div>
+              <h1>${escapeHTML(state.settings.business)}</h1>
+              <p>${escapeHTML(state.settings.admin)}</p>
+            </div>
+          </div>
+
+          <div class="nav">
+            ${navButton("dashboard", "📊 Panel principal")}
+            ${navButton("clients", "👥 Clientes")}
+            ${navButton("accounts", "🔐 Cuentas")}
+            ${navButton("renewals", "⏰ Renovaciones")}
+            ${navButton("payments", "💰 Pagos")}
+            ${navButton("reports", "📄 Reportes")}
+            ${navButton("settings", "⚙️ Configuración")}
+            <button onclick="logout()">🚪 Cerrar sesión</button>
+          </div>
+        </aside>
+
+        <main class="main" id="main"></main>
+      </div>
+    `;
+
+    renderView();
+  }
+
+  function navButton(view, label) {
+    return `<button class="${currentView === view ? "active" : ""}" onclick="go('${view}')">${label}</button>`;
+  }
+
+  function go(view) {
+    currentView = view;
+    searchText = "";
+    render();
+  }
+
+  function renderView() {
+    if (currentView === "dashboard") renderDashboard();
+    if (currentView === "clients") renderClients();
+    if (currentView === "accounts") renderAccounts();
+    if (currentView === "renewals") renderRenewals();
+    if (currentView === "payments") renderPayments();
+    if (currentView === "reports") renderReports();
+    if (currentView === "settings") renderSettings();
+  }
+
+  function top(title, subtitle, button = "") {
+    return `
+      <div class="topbar">
+        <div>
+          <h2>${title}</h2>
+          <p>${subtitle}</p>
+        </div>
+        <div>${button}</div>
+      </div>
+    `;
+  }
+
+  function renderDashboard() {
+    const totalClients = state.clients.length;
+    const totalAccounts = state.accounts.length;
+    const expired = state.clients.filter(c => daysLeft(c.end) < 0).length;
+    const soon = state.clients.filter(c => daysLeft(c.end) >= 0 && daysLeft(c.end) <= 5).length;
+    const income = state.payments.reduce((s, p) => s + Number(p.amount || 0), 0);
+
+    const upcoming = [...state.clients]
+      .sort((a,b) => daysLeft(a.end) - daysLeft(b.end))
+      .slice(0, 8);
+
+    document.getElementById("main").innerHTML = `
+      ${top("Panel principal", "Resumen general de clientes, cuentas y renovaciones.")}
+
+      <div class="grid cards">
+        <div class="card">
+          <h3>Clientes</h3>
+          <div class="big">${totalClients}</div>
+        </div>
+        <div class="card">
+          <h3>Cuentas</h3>
+          <div class="big">${totalAccounts}</div>
+        </div>
+        <div class="card">
+          <h3>Por vencer</h3>
+          <div class="big">${soon}</div>
+        </div>
+        <div class="card">
+          <h3>Ingresos registrados</h3>
+          <div class="big">${money(income)}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Renovaciones próximas</h3>
+        ${upcoming.length ? `
+          <div class="list">
+            ${upcoming.map(c => {
+              const s = statusInfo(c.end);
+              return `
+                <div class="item">
+                  <div>
+                    <strong>${escapeHTML(c.name)}</strong>
+                    <span>${escapeHTML(c.service)} · vence: ${c.end}</span>
+                  </div>
+                  <span class="badge ${s.cls}">${s.text}</span>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        ` : `<div class="empty">No hay clientes registrados.</div>`}
+      </div>
+    `;
+  }
+
+  function renderClients() {
+    const list = state.clients.filter(c =>
+      `${c.name} ${c.phone} ${c.service}`.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    document.getElementById("main").innerHTML = `
+      ${top("Clientes", "Registro de clientes y vencimientos.",
+        `<button class="btn" onclick="openClientForm()">+ Nuevo cliente</button>`
+      )}
+
+      <div class="card">
+        <div class="toolbar">
+          <input class="search" placeholder="Buscar cliente..." value="${escapeHTML(searchText)}" oninput="searchText=this.value; renderClients()">
+          <button class="btn secondary" onclick="exportCSV('clientes')">Exportar clientes</button>
+        </div>
+
+        ${list.length ? `
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Teléfono</th>
+                <th>Servicio</th>
+                <th>Cuenta</th>
+                <th>Inicio</th>
+                <th>Vence</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(c => {
+                const s = statusInfo(c.end);
+                return `
+                  <tr>
+                    <td><b>${escapeHTML(c.name)}</b></td>
+                    <td>${escapeHTML(c.phone)}</td>
+                    <td>${escapeHTML(c.service)}</td>
+                    <td>${escapeHTML(accountName(c.accountId))}</td>
+                    <td>${escapeHTML(c.start)}</td>
+                    <td>${escapeHTML(c.end)}</td>
+                    <td>${money(c.price)}</td>
+                    <td><span class="badge ${s.cls}">${s.text}</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn mini" onclick="renewClient('${c.id}')">Renovar</button>
+                        <button class="btn secondary mini" onclick="sendWhatsApp('${c.id}')">WhatsApp</button>
+                        <button class="btn secondary mini" onclick="openClientForm('${c.id}')">Editar</button>
+                        <button class="btn danger mini" onclick="deleteClient('${c.id}')">Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        ` : `<div class="empty">No hay clientes registrados.</div>`}
+      </div>
+    `;
+  }
+
+  function renderAccounts() {
+    const list = state.accounts.filter(a =>
+      `${a.service} ${a.email} ${a.profile}`.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    document.getElementById("main").innerHTML = `
+      ${top("Cuentas", "Control de correos, perfiles, claves y costos.",
+        `<button class="btn" onclick="openAccountForm()">+ Nueva cuenta</button>`
+      )}
+
+      <div class="card">
+        <div class="toolbar">
+          <input class="search" placeholder="Buscar cuenta..." value="${escapeHTML(searchText)}" oninput="searchText=this.value; renderAccounts()">
+          <button class="btn secondary" onclick="exportCSV('cuentas')">Exportar cuentas</button>
+        </div>
+
+        ${list.length ? `
+          <table>
+            <thead>
+              <tr>
+                <th>Servicio</th>
+                <th>Correo</th>
+                <th>Clave</th>
+                <th>Perfil</th>
+                <th>PIN</th>
+                <th>Pantallas</th>
+                <th>Vence</th>
+                <th>Costo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(a => {
+                const s = statusInfo(a.expiry);
+                return `
+                  <tr>
+                    <td><b>${escapeHTML(a.service)}</b></td>
+                    <td>${escapeHTML(a.email)}</td>
+                    <td>${escapeHTML(a.password)}</td>
+                    <td>${escapeHTML(a.profile)}</td>
+                    <td>${escapeHTML(a.pin)}</td>
+                    <td>${escapeHTML(a.screens)}</td>
+                    <td><span class="badge ${s.cls}">${escapeHTML(a.expiry)}</span></td>
+                    <td>${money(a.cost)}</td>
+                    <td>
+                      <div class="actions">
+                        <button class="btn secondary mini" onclick="openAccountForm('${a.id}')">Editar</button>
+                        <button class="btn danger mini" onclick="deleteAccount('${a.id}')">Eliminar</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        ` : `<div class="empty">No hay cuentas registradas.</div>`}
+      </div>
+    `;
+  }
+
+  function renderRenewals() {
+    const list = [...state.clients].sort((a,b) => daysLeft(a.end) - daysLeft(b.end));
+
+    document.getElementById("main").innerHTML = `
+      ${top("Renovaciones", "Clientes ordenados por fecha de vencimiento.")}
+
+      <div class="card">
+        ${list.length ? `
+          <div class="list">
+            ${list.map(c => {
+              const s = statusInfo(c.end);
+              return `
+                <div class="item">
+                  <div>
+                    <strong>${escapeHTML(c.name)} · ${escapeHTML(c.service)}</strong>
+                    <span>Tel: ${escapeHTML(c.phone)} · vence: ${escapeHTML(c.end)} · ${money(c.price)}</span>
+                  </div>
+                  <div class="actions">
+                    <span class="badge ${s.cls}">${s.text}</span>
+                    <button class="btn mini" onclick="renewClient('${c.id}')">Renovar</button>
+                    <button class="btn secondary mini" onclick="sendWhatsApp('${c.id}')">Avisar</button>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        ` : `<div class="empty">No hay renovaciones.</div>`}
+      </div>
+    `;
+  }
+
+  function renderPayments() {
+    const list = [...state.payments].sort((a,b) => b.date.localeCompare(a.date));
+
+    document.getElementById("main").innerHTML = `
+      ${top("Pagos", "Registro de pagos recibidos.",
+        `<button class="btn" onclick="openPaymentForm()">+ Nuevo pago</button>`
+      )}
+
+      <div class="card">
+        ${list.length ? `
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Monto</th>
+                <th>Método</th>
+                <th>Detalle</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.map(p => `
+                <tr>
+                  <td>${escapeHTML(p.date)}</td>
+                  <td>${escapeHTML(clientName(p.clientId))}</td>
+                  <td>${money(p.amount)}</td>
+                  <td>${escapeHTML(p.method)}</td>
+                  <td>${escapeHTML(p.detail)}</td>
+                  <td><button class="btn danger mini" onclick="deletePayment('${p.id}')">Eliminar</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        ` : `<div class="empty">No hay pagos registrados.</div>`}
+      </div>
+    `;
+  }
+
+  function renderReports() {
+    const income = state.payments.reduce((s, p) => s + Number(p.amount || 0), 0);
+    const cost = state.accounts.reduce((s, a) => s + Number(a.cost || 0), 0);
+    const profit = income - cost;
+
+    document.getElementById("main").innerHTML = `
+      ${top("Reportes", "Resumen económico básico.")}
+
+      <div class="grid cards">
+        <div class="card">
+          <h3>Ingresos</h3>
+          <div class="big">${money(income)}</div>
+        </div>
+        <div class="card">
+          <h3>Costos de cuentas</h3>
+          <div class="big">${money(cost)}</div>
+        </div>
+        <div class="card">
+          <h3>Ganancia estimada</h3>
+          <div class="big">${money(profit)}</div>
+        </div>
+        <div class="card">
+          <h3>Clientes vencidos</h3>
+          <div class="big">${state.clients.filter(c => daysLeft(c.end) < 0).length}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Exportar información</h3>
+        <div class="actions">
+          <button class="btn" onclick="exportCSV('clientes')">Exportar clientes</button>
+          <button class="btn" onclick="exportCSV('cuentas')">Exportar cuentas</button>
+          <button class="btn" onclick="exportCSV('pagos')">Exportar pagos</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderSettings() {
+    document.getElementById("main").innerHTML = `
+      ${top("Configuración", "Datos generales del negocio.")}
+
+      <div class="card">
+        <div class="form-grid">
+          <div>
+            <label>Nombre del negocio</label>
+            <input id="setBusiness" value="${escapeHTML(state.settings.business)}">
+          </div>
+          <div>
+            <label>Nombre del administrador</label>
+            <input id="setAdmin" value="${escapeHTML(state.settings.admin)}">
+          </div>
+          <div>
+            <label>Moneda</label>
+            <input id="setCurrency" value="${escapeHTML(state.settings.currency)}">
+          </div>
+          <div>
+            <label>WhatsApp del negocio</label>
+            <input id="setPhone" value="${escapeHTML(state.settings.phone)}">
+          </div>
+        </div>
+
+        <br>
+
+        <button class="btn" onclick="saveSettings()">Guardar configuración</button>
+        <button class="btn danger" onclick="resetData()">Borrar todo</button>
+
+        <p class="hint">
+          Este panel guarda los datos en el navegador. Si abres la página en otra computadora o celular, no verás los mismos datos.
+        </p>
+      </div>
+    `;
+  }
+
+  function openModal(title, html, onSubmit) {
+    const modalBg = document.getElementById("modalBg");
+    const modal = document.getElementById("modal");
+
+    modal.innerHTML = `
+      <h3>${title}</h3>
+      <form id="modalForm">
+        ${html}
+        <div class="modal-actions">
+          <button type="button" class="btn secondary" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn">Guardar</button>
+        </div>
+      </form>
+    `;
+
+    document.getElementById("modalForm").onsubmit = function(e) {
+      e.preventDefault();
+      onSubmit(new FormData(e.target));
+    };
+
+    modalBg.style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("modalBg").style.display = "none";
+  }
+
+  function openClientForm(id = null) {
+    const c = id ? state.clients.find(x => x.id === id) : {};
+    const accountOptions = state.accounts.map(a =>
+      `<option value="${a.id}" ${c.accountId === a.id ? "selected" : ""}>${escapeHTML(a.service)} - ${escapeHTML(a.email)}</option>`
+    ).join("");
+
+    openModal(id ? "Editar cliente" : "Nuevo cliente", `
+      <div class="form-grid">
+        <div>
+          <label>Nombre</label>
+          <input name="name" required value="${escapeHTML(c.name || "")}">
+        </div>
+        <div>
+          <label>Teléfono / WhatsApp</label>
+          <input name="phone" value="${escapeHTML(c.phone || "")}">
+        </div>
+        <div>
+          <label>Servicio</label>
+          <input name="service" required value="${escapeHTML(c.service || "")}">
+        </div>
+        <div>
+          <label>Cuenta asignada</label>
+          <select name="accountId">
+            <option value="">Sin cuenta</option>
+            ${accountOptions}
+          </select>
+        </div>
+        <div>
+          <label>Fecha de inicio</label>
+          <input type="date" name="start" value="${escapeHTML(c.start || todayPlus(0))}">
+        </div>
+        <div>
+          <label>Fecha de vencimiento</label>
+          <input type="date" name="end" required value="${escapeHTML(c.end || todayPlus(30))}">
+        </div>
+        <div>
+          <label>Precio</label>
+          <input type="number" step="0.01" name="price" value="${escapeHTML(c.price || "")}">
+        </div>
+        <div class="full">
+          <label>Notas</label>
+          <textarea name="notes">${escapeHTML(c.notes || "")}</textarea>
+        </div>
+      </div>
+    `, form => {
+      const data = Object.fromEntries(form.entries());
+      if (id) {
+        state.clients = state.clients.map(x => x.id === id ? { ...x, ...data } : x);
+      } else {
+        state.clients.push({ id: crypto.randomUUID(), ...data });
+      }
+      saveState();
+      closeModal();
+      render();
+    });
+  }
+
+  function openAccountForm(id = null) {
+    const a = id ? state.accounts.find(x => x.id === id) : {};
+
+    openModal(id ? "Editar cuenta" : "Nueva cuenta", `
+      <div class="form-grid">
+        <div>
+          <label>Servicio</label>
+          <input name="service" required value="${escapeHTML(a.service || "")}">
+        </div>
+        <div>
+          <label>Correo</label>
+          <input name="email" value="${escapeHTML(a.email || "")}">
+        </div>
+        <div>
+          <label>Contraseña</label>
+          <input name="password" value="${escapeHTML(a.password || "")}">
+        </div>
+        <div>
+          <label>Perfil</label>
+          <input name="profile" value="${escapeHTML(a.profile || "")}">
+        </div>
+        <div>
+          <label>PIN</label>
+          <input name="pin" value="${escapeHTML(a.pin || "")}">
+        </div>
+        <div>
+          <label>Pantallas</label>
+          <input name="screens" value="${escapeHTML(a.screens || "")}">
+        </div>
+        <div>
+          <label>Vencimiento de cuenta</label>
+          <input type="date" name="expiry" value="${escapeHTML(a.expiry || todayPlus(30))}">
+        </div>
+        <div>
+          <label>Costo</label>
+          <input type="number" step="0.01" name="cost" value="${escapeHTML(a.cost || "")}">
+        </div>
+        <div class="full">
+          <label>Notas</label>
+          <textarea name="notes">${escapeHTML(a.notes || "")}</textarea>
+        </div>
+      </div>
+    `, form => {
+      const data = Object.fromEntries(form.entries());
+      if (id) {
+        state.accounts = state.accounts.map(x => x.id === id ? { ...x, ...data } : x);
+      } else {
+        state.accounts.push({ id: crypto.randomUUID(), ...data });
+      }
+      saveState();
+      closeModal();
+      render();
+    });
+  }
+
+  function openPaymentForm() {
+    const options = state.clients.map(c =>
+      `<option value="${c.id}">${escapeHTML(c.name)} - ${escapeHTML(c.service)}</option>`
+    ).join("");
+
+    openModal("Nuevo pago", `
+      <div class="form-grid">
+        <div>
+          <label>Fecha</label>
+          <input type="date" name="date" value="${todayPlus(0)}">
+        </div>
+        <div>
+          <label>Cliente</label>
+          <select name="clientId">${options}</select>
+        </div>
+        <div>
+          <label>Monto</label>
+          <input type="number" step="0.01" name="amount" required>
+        </div>
+        <div>
+          <label>Método</label>
+          <select name="method">
+            <option>Yape</option>
+            <option>Plin</option>
+            <option>Transferencia</option>
+            <option>Efectivo</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="full">
+          <label>Detalle</label>
+          <textarea name="detail"></textarea>
+        </div>
+      </div>
+    `, form => {
+      state.payments.push({ id: crypto.randomUUID(), ...Object.fromEntries(form.entries()) });
+      saveState();
+      closeModal();
+      render();
+    });
+  }
+
+  function renewClient(id) {
+    const c = state.clients.find(x => x.id === id);
+    if (!c) return;
+
+    openModal("Renovar cliente", `
+      <div class="form-grid">
+        <div>
+          <label>Cliente</label>
+          <input disabled value="${escapeHTML(c.name)}">
+        </div>
+        <div>
+          <label>Nueva fecha de vencimiento</label>
+          <input type="date" name="end" value="${todayPlus(30)}">
+        </div>
+        <div>
+          <label>Monto pagado</label>
+          <input type="number" step="0.01" name="amount" value="${escapeHTML(c.price || "")}">
+        </div>
+        <div>
+          <label>Método</label>
+          <select name="method">
+            <option>Yape</option>
+            <option>Plin</option>
+            <option>Transferencia</option>
+            <option>Efectivo</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+    `, form => {
+      const data = Object.fromEntries(form.entries());
+      c.end = data.end;
+      state.payments.push({
+        id: crypto.randomUUID(),
+        date: todayPlus(0),
+        clientId: c.id,
+        amount: data.amount,
+        method: data.method,
+        detail: "Renovación de servicio"
+      });
+      saveState();
+      closeModal();
+      render();
+    });
+  }
+
+  function sendWhatsApp(id) {
+    const c = state.clients.find(x => x.id === id);
+    if (!c) return;
+
+    const phone = String(c.phone || "").replace(/\D/g, "");
+    if (!phone) {
+      alert("Este cliente no tiene teléfono registrado.");
+      return;
+    }
+
+    const message = `Hola ${c.name}, te recordamos que tu servicio ${c.service} vence el ${c.end}. Puedes realizar tu renovación para continuar activo.`;
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+  }
+
+  function deleteClient(id) {
+    if (!confirm("¿Eliminar este cliente?")) return;
+    state.clients = state.clients.filter(c => c.id !== id);
+    saveState();
+    render();
+  }
+
+  function deleteAccount(id) {
+    if (!confirm("¿Eliminar esta cuenta?")) return;
+    state.accounts = state.accounts.filter(a => a.id !== id);
+    saveState();
+    render();
+  }
+
+  function deletePayment(id) {
+    if (!confirm("¿Eliminar este pago?")) return;
+    state.payments = state.payments.filter(p => p.id !== id);
+    saveState();
+    render();
+  }
+
+  function saveSettings() {
+    state.settings.business = document.getElementById("setBusiness").value;
+    state.settings.admin = document.getElementById("setAdmin").value;
+    state.settings.currency = document.getElementById("setCurrency").value;
+    state.settings.phone = document.getElementById("setPhone").value;
+    saveState();
+    render();
+  }
+
+  function resetData() {
+    if (!confirm("Esto borrará clientes, cuentas y pagos. ¿Continuar?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state = loadState();
+    render();
+  }
+
+  function exportCSV(type) {
+    let rows = [];
+
+    if (type === "clientes") {
+      rows = [
+        ["Nombre", "Telefono", "Servicio", "Cuenta", "Inicio", "Vence", "Precio", "Notas"],
+        ...state.clients.map(c => [
+          c.name, c.phone, c.service, accountName(c.accountId), c.start, c.end, c.price, c.notes
+        ])
+      ];
+    }
+
+    if (type === "cuentas") {
+      rows = [
+        ["Servicio", "Correo", "Contraseña", "Perfil", "PIN", "Pantallas", "Vence", "Costo", "Notas"],
+        ...state.accounts.map(a => [
+          a.service, a.email, a.password, a.profile, a.pin, a.screens, a.expiry, a.cost, a.notes
+        ])
+      ];
+    }
+
+    if (type === "pagos") {
+      rows = [
+        ["Fecha", "Cliente", "Monto", "Metodo", "Detalle"],
+        ...state.payments.map(p => [
+          p.date, clientName(p.clientId), p.amount, p.method, p.detail
+        ])
+      ];
+    }
+
+    const csv = rows.map(row =>
+      row.map(cell => `"${String(cell ?? "").replaceAll('"', '""')}"`).join(",")
+    ).join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${type}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  render();
+</script>
+</body>
+</html>
