@@ -398,7 +398,32 @@
     <div class="modal" id="modal"></div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // ===== SINCRONIZACIÓN EN LA NUBE CON FIREBASE =====
+    // 1) Crea un proyecto en Firebase.
+    // 2) Activa Firestore Database.
+    // 3) Copia aquí la configuración web de tu proyecto.
+    // 4) Sube este mismo index.html a GitHub Pages.
+    var firebaseConfig = {
+      apiKey: "AIzaSyDfV9gVRvsKqpazibGLGYmW1B4YdPVBy9Y",
+      authDomain: "adminflujo.firebaseapp.com",
+      projectId: "adminflujo",
+      storageBucket: "adminflujo.firebasestorage.app",
+      messagingSenderId: "408780728879",
+      appId: "1:408780728879:web:a9adb2cb68c8f14482b4da"
+    };
+
+    // Todos los dispositivos que usen este documento verán la misma información.
+    var FIREBASE_DOC_ID = "panel_flujo_roody";
+    var firebaseDb = null;
+    var firebaseDocRef = null;
+    var nubeActiva = false;
+    var escuchandoNube = false;
+    var ultimoEstadoNube = "";
+
     var STORAGE_KEY = "streaming_manager_funcional_2026";
     var AUTH_KEY = "streaming_manager_login_2026";
     var vista = "inicio";
@@ -467,18 +492,22 @@
       };
     }
 
+    function datosValidos(data) {
+      return (
+        data &&
+        data.config &&
+        Array.isArray(data.cuentas) &&
+        Array.isArray(data.clientes) &&
+        Array.isArray(data.pagos)
+      );
+    }
+
     function cargar() {
       try {
         var guardado = localStorage.getItem(STORAGE_KEY);
         if (guardado) {
           var data = JSON.parse(guardado);
-          if (
-            data &&
-            data.config &&
-            Array.isArray(data.cuentas) &&
-            Array.isArray(data.clientes) &&
-            Array.isArray(data.pagos)
-          ) {
+          if (datosValidos(data)) {
             return data;
           }
         }
@@ -493,8 +522,97 @@
 
     var estado = cargar();
 
-    function guardar() {
+    function guardarLocal() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+    }
+
+    function firebaseConfigurado() {
+      return (
+        firebaseConfig.apiKey &&
+        firebaseConfig.projectId &&
+        firebaseConfig.apiKey.indexOf("PEGA_AQUI") === -1 &&
+        firebaseConfig.projectId.indexOf("PEGA_AQUI") === -1
+      );
+    }
+
+    async function iniciarNube() {
+      if (!firebaseConfigurado()) {
+        console.log("Firebase aún no está configurado. La app seguirá guardando en este navegador.");
+        return;
+      }
+
+      if (nubeActiva) return;
+
+      try {
+        var appFirebase = initializeApp(firebaseConfig);
+        firebaseDb = getFirestore(appFirebase);
+        firebaseDocRef = doc(firebaseDb, "streaming_manager", FIREBASE_DOC_ID);
+
+        var snap = await getDoc(firebaseDocRef);
+
+        if (snap.exists() && datosValidos(snap.data().estado)) {
+          estado = snap.data().estado;
+          guardarLocal();
+          render();
+        } else {
+          await setDoc(firebaseDocRef, {
+            estado: estado,
+            actualizado: serverTimestamp()
+          }, { merge: true });
+        }
+
+        ultimoEstadoNube = JSON.stringify(estado);
+        nubeActiva = true;
+
+        if (!escuchandoNube) {
+          escuchandoNube = true;
+
+          onSnapshot(firebaseDocRef, function(snapActual) {
+            if (!snapActual.exists()) return;
+
+            var remoto = snapActual.data().estado;
+            if (!datosValidos(remoto)) return;
+
+            var remotoJson = JSON.stringify(remoto);
+            var localJson = JSON.stringify(estado);
+
+            if (remotoJson !== localJson) {
+              estado = remoto;
+              ultimoEstadoNube = remotoJson;
+              guardarLocal();
+              render();
+            }
+          });
+        }
+
+        console.log("Sincronización en la nube activada.");
+      } catch (e) {
+        console.log("Error conectando con Firebase:", e);
+        alert("No se pudo conectar con Firebase. Revisa la configuración y las reglas de Firestore.");
+      }
+    }
+
+    async function guardarNube() {
+      if (!firebaseDocRef) return;
+
+      try {
+        var actualJson = JSON.stringify(estado);
+        if (actualJson === ultimoEstadoNube) return;
+
+        ultimoEstadoNube = actualJson;
+
+        await setDoc(firebaseDocRef, {
+          estado: estado,
+          actualizado: serverTimestamp()
+        }, { merge: true });
+      } catch (e) {
+        console.log("Error guardando en Firebase:", e);
+      }
+    }
+
+    function guardar() {
+      guardarLocal();
+      guardarNube();
     }
 
     function texto(v) {
@@ -618,7 +736,7 @@
             '<p class="note">' +
               'Usuario: <b>admin</b><br>' +
               'Contraseña: <b>1234</b><br><br>' +
-              'Los datos se guardan en este navegador.' +
+              'Los datos se guardan en este navegador y, cuando configures Firebase, también se sincronizan en la nube.' +
             '</p>' +
           '</div>' +
         '</div>';
@@ -631,6 +749,7 @@
       if (u === "admin" && c === "1234") {
         localStorage.setItem(AUTH_KEY, "ok");
         render();
+        iniciarNube();
       } else {
         alert("Usuario o contraseña incorrectos.");
       }
@@ -1018,12 +1137,13 @@
           '<br>' +
           '<div class="actions">' +
             '<button class="btn" onclick="guardarConfig()">Guardar configuración</button>' +
+            '<button class="btn secondary" onclick="iniciarNube()">Sincronizar nube</button>' +
             '<button class="btn danger" onclick="borrarTodo()">Borrar todo</button>' +
           '</div>' +
 
           '<p class="note">' +
-            'Este sistema funciona en GitHub Pages y guarda los datos en el navegador. ' +
-            'Si entras desde otro celular o computadora, no aparecerán los mismos registros.' +
+            'Este sistema funciona en GitHub Pages. Antes guardaba solo en este navegador; ' +
+            'ahora puede sincronizar clientes, cuentas, pagos y configuración en Firebase para ver lo mismo desde otro dispositivo.' +
           '</p>' +
         '</div>';
 
@@ -1426,6 +1546,7 @@
     }
 
     window.iniciarSesion = iniciarSesion;
+    window.iniciarNube = iniciarNube;
     window.cerrarSesion = cerrarSesion;
     window.ir = ir;
     window.filtrar = filtrar;
@@ -1443,6 +1564,9 @@
     window.cerrarModal = cerrarModal;
 
     render();
+    if (localStorage.getItem(AUTH_KEY) === "ok") {
+      iniciarNube();
+    }
   </script>
 </body>
 </html>
