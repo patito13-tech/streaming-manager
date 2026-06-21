@@ -1,24 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Streaming Manager</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel2: #1f2937;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --green: #22c55e;
-      --yellow: #facc15;
-      --red: #ef4444;
-      --orange: #fb923c;
-      --border: rgba(255,255,255,.12);
-    }
-
     * {
       box-sizing: border-box;
       font-family: Arial, Helvetica, sans-serif;
@@ -26,8 +12,116 @@
 
     body {
       margin: 0;
-      background: linear-gradient(135deg, #020617, #0f172a);
-      color: var(--text);
+      background: #0f172a;
+      color: #f8fafc;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    .login {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #111827;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 25px 60px rgba(0,0,0,.35);
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: white;
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: #020617;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 12px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .btn {
+      border: 0;
+      padding: 11px 15px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      background: #38bdf8;
+      color: #082f49;
+    }
+
+    .btn:hover {
+      opacity: .9;
+    }
+
+    .btn.secondary {
+      background: #1f2937;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .btn.danger {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn.small {
+      padding: 7px 10px;
+      font-size: 12px;
+      border-radius: 9px;
     }
 
     .app {
@@ -37,8 +131,8 @@
 
     .sidebar {
       width: 260px;
-      background: rgba(15, 23, 42, .95);
-      border-right: 1px solid var(--border);
+      background: #020617;
+      border-right: 1px solid rgba(255,255,255,.10);
       padding: 20px;
       position: fixed;
       top: 0;
@@ -47,52 +141,32 @@
       overflow-y: auto;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
+    .sidebar h1 {
+      font-size: 20px;
+      margin-bottom: 3px;
     }
 
-    .logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #38bdf8, #2563eb);
+    .nav {
       display: grid;
-      place-items: center;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .brand p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 12px;
+      gap: 8px;
+      margin-top: 24px;
     }
 
     .nav button {
-      width: 100%;
-      border: 0;
       background: transparent;
-      color: var(--muted);
-      padding: 13px 14px;
+      border: 0;
+      color: #94a3b8;
       text-align: left;
+      padding: 13px 14px;
       border-radius: 12px;
       cursor: pointer;
       font-size: 15px;
-      margin-bottom: 6px;
     }
 
     .nav button:hover,
     .nav button.active {
-      background: rgba(56, 189, 248, .14);
-      color: var(--text);
+      background: rgba(56,189,248,.15);
+      color: white;
     }
 
     .main {
@@ -101,43 +175,17 @@
       padding: 24px;
     }
 
-    .topbar {
+    .top {
       display: flex;
-      justify-content: space-between;
-      gap: 15px;
       align-items: center;
-      margin-bottom: 24px;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
     }
 
-    .topbar h2 {
-      margin: 0;
-      font-size: 26px;
-    }
-
-    .topbar p {
-      margin: 4px 0 0;
-      color: var(--muted);
-    }
-
-    .btn {
-      border: 0;
-      padding: 11px 15px;
-      border-radius: 12px;
-      cursor: pointer;
-      background: var(--accent);
-      color: #00111c;
-      font-weight: bold;
-    }
-
-    .btn.secondary {
-      background: var(--panel2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn.danger {
-      background: var(--red);
-      color: white;
+    .top h2 {
+      font-size: 28px;
+      margin-bottom: 4px;
     }
 
     .grid {
@@ -147,53 +195,35 @@
 
     .cards {
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .card {
-      background: rgba(17, 24, 39, .86);
-      border: 1px solid var(--border);
+      background: #111827;
+      border: 1px solid rgba(255,255,255,.10);
       border-radius: 18px;
       padding: 18px;
-      box-shadow: 0 15px 30px rgba(0,0,0,.18);
+      box-shadow: 0 18px 40px rgba(0,0,0,.18);
     }
 
-    .card h3 {
-      margin: 0 0 8px;
-      color: var(--muted);
+    .card-title {
+      color: #94a3b8;
       font-size: 14px;
-      font-weight: normal;
+      margin-bottom: 8px;
     }
 
-    .card .big {
-      font-size: 28px;
-      font-weight: bold;
+    .big {
+      font-size: 30px;
+      font-weight: 900;
     }
 
     .toolbar {
       display: flex;
+      justify-content: space-between;
       gap: 10px;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      background: #020617;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 11px 12px;
-      outline: none;
-    }
-
-    textarea {
-      min-height: 90px;
-      resize: vertical;
     }
 
     .search {
@@ -207,29 +237,23 @@
 
     th,
     td {
-      padding: 13px 10px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      padding: 12px 9px;
       text-align: left;
       font-size: 14px;
       vertical-align: middle;
     }
 
     th {
-      color: var(--muted);
-      font-weight: normal;
+      color: #94a3b8;
+      font-weight: 400;
       background: rgba(255,255,255,.03);
     }
 
     .actions {
       display: flex;
-      gap: 7px;
       flex-wrap: wrap;
-    }
-
-    .mini {
-      padding: 7px 9px;
-      border-radius: 9px;
-      font-size: 12px;
+      gap: 7px;
     }
 
     .badge {
@@ -237,83 +261,27 @@
       padding: 5px 9px;
       border-radius: 999px;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 800;
     }
 
-    .active-badge {
+    .ok {
       background: rgba(34,197,94,.18);
       color: #86efac;
     }
 
-    .soon-badge {
+    .warn {
       background: rgba(250,204,21,.18);
       color: #fde68a;
     }
 
-    .expired-badge {
-      background: rgba(239,68,68,.2);
-      color: #fecaca;
-    }
-
-    .today-badge {
-      background: rgba(251,146,60,.2);
+    .today {
+      background: rgba(251,146,60,.20);
       color: #fed7aa;
     }
 
-    .modal-bg {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 20;
-    }
-
-    .modal {
-      width: 100%;
-      max-width: 720px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 20px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal h3 {
-      margin-top: 0;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      color: var(--muted);
-      font-size: 13px;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .empty {
-      color: var(--muted);
-      text-align: center;
-      padding: 30px;
+    .bad {
+      background: rgba(239,68,68,.20);
+      color: #fecaca;
     }
 
     .list {
@@ -323,68 +291,76 @@
 
     .item {
       background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,.10);
       padding: 14px;
+      border-radius: 15px;
       display: flex;
       justify-content: space-between;
-      gap: 15px;
+      gap: 14px;
       align-items: center;
     }
 
-    .item strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .item span {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .login {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 20px;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 430px;
-      background: rgba(15, 23, 42, .93);
-      border: 1px solid var(--border);
-      border-radius: 24px;
+    .empty {
+      text-align: center;
       padding: 28px;
-      box-shadow: 0 25px 50px rgba(0,0,0,.35);
+      color: #94a3b8;
     }
 
-    .login-card h1 {
-      margin: 0 0 8px;
-      font-size: 30px;
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.75);
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
     }
 
-    .login-card p {
-      color: var(--muted);
-      margin-bottom: 20px;
+    .modal {
+      width: 100%;
+      max-width: 760px;
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 22px;
+      padding: 22px;
     }
 
-    .hint {
-      color: var(--muted);
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .note {
+      color: #94a3b8;
       font-size: 13px;
-      margin-top: 12px;
       line-height: 1.5;
+      margin-top: 14px;
     }
 
     @media (max-width: 900px) {
+      .app {
+        display: block;
+      }
+
       .sidebar {
         position: relative;
         width: 100%;
         bottom: auto;
-      }
-
-      .app {
-        display: block;
       }
 
       .main {
@@ -397,13 +373,13 @@
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 620px) {
       .cards,
       .form-grid {
         grid-template-columns: 1fr;
       }
 
-      .topbar {
+      .top {
         display: block;
       }
 
@@ -414,892 +390,1059 @@
     }
   </style>
 </head>
+
 <body>
+  <div id="app"></div>
 
-<div id="root"></div>
+  <div class="modal-bg" id="modalBg">
+    <div class="modal" id="modal"></div>
+  </div>
 
-<div class="modal-bg" id="modalBg">
-  <div class="modal" id="modal"></div>
-</div>
+  <script>
+    var STORAGE_KEY = "streaming_manager_funcional_2026";
+    var AUTH_KEY = "streaming_manager_login_2026";
+    var vista = "inicio";
+    var busqueda = "";
 
-<script>
-  const STORAGE_KEY = "streaming_manager_data_v1";
-  const AUTH_KEY = "streaming_manager_auth_v1";
-
-  const seed = {
-    settings: {
-      business: "Streaming Manager",
-      admin: "Administrador",
-      currency: "S/",
-      phone: ""
-    },
-    accounts: [
-      {
-        id: crypto.randomUUID(),
-        service: "Netflix",
-        email: "cuenta1@email.com",
-        password: "123456",
-        profile: "Perfil 1",
-        pin: "0000",
-        screens: "4",
-        expiry: todayPlus(20),
-        cost: "35",
-        notes: "Cuenta demo"
-      },
-      {
-        id: crypto.randomUUID(),
-        service: "Disney+",
-        email: "disney@email.com",
-        password: "123456",
-        profile: "Perfil 2",
-        pin: "1111",
-        screens: "2",
-        expiry: todayPlus(12),
-        cost: "20",
-        notes: "Cuenta demo"
-      }
-    ],
-    clients: [
-      {
-        id: crypto.randomUUID(),
-        name: "Cliente Demo",
-        phone: "51999999999",
-        service: "Netflix",
-        accountId: "",
-        start: todayPlus(-10),
-        end: todayPlus(5),
-        price: "15",
-        notes: "Cliente de ejemplo"
-      }
-    ],
-    payments: []
-  };
-
-  let state = loadState();
-  let currentView = "dashboard";
-  let searchText = "";
-
-  function todayPlus(days) {
-    const d = new Date();
-    d.setDate(d.getDate() + days);
-    return d.toISOString().slice(0, 10);
-  }
-
-  function loadState() {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) return JSON.parse(saved);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-    return JSON.parse(JSON.stringify(seed));
-  }
-
-  function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
-
-  function money(value) {
-    const n = Number(value || 0);
-    return `${state.settings.currency} ${n.toFixed(2)}`;
-  }
-
-  function daysLeft(date) {
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    const end = new Date(date + "T00:00:00");
-    return Math.ceil((end - today) / 86400000);
-  }
-
-  function statusInfo(date) {
-    const d = daysLeft(date);
-    if (d < 0) return { text: "Vencido", cls: "expired-badge" };
-    if (d === 0) return { text: "Vence hoy", cls: "today-badge" };
-    if (d <= 5) return { text: `Vence en ${d} días`, cls: "soon-badge" };
-    return { text: "Activo", cls: "active-badge" };
-  }
-
-  function escapeHTML(text) {
-    return String(text ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
-  }
-
-  function clientName(id) {
-    return state.clients.find(c => c.id === id)?.name || "Sin cliente";
-  }
-
-  function accountName(id) {
-    const a = state.accounts.find(x => x.id === id);
-    if (!a) return "Sin cuenta";
-    return `${a.service} - ${a.email}`;
-  }
-
-  function isLogged() {
-    return localStorage.getItem(AUTH_KEY) === "ok";
-  }
-
-  function login() {
-    const user = document.getElementById("loginUser").value.trim();
-    const pass = document.getElementById("loginPass").value.trim();
-
-    if (user === "admin" && pass === "1234") {
-      localStorage.setItem(AUTH_KEY, "ok");
-      render();
-    } else {
-      alert("Usuario o contraseña incorrectos. Usa admin / 1234");
-    }
-  }
-
-  function logout() {
-    localStorage.removeItem(AUTH_KEY);
-    render();
-  }
-
-  function renderLogin() {
-    document.getElementById("root").innerHTML = `
-      <div class="login">
-        <div class="login-card">
-          <div class="brand">
-            <div class="logo">SM</div>
-            <div>
-              <h1>Streaming Manager</h1>
-              <p>Panel de control para cuentas de streaming</p>
-            </div>
-          </div>
-
-          <label>Usuario</label>
-          <input id="loginUser" value="admin">
-
-          <br><br>
-
-          <label>Contraseña</label>
-          <input id="loginPass" type="password" value="1234">
-
-          <br><br>
-
-          <button class="btn" style="width:100%" onclick="login()">Ingresar</button>
-
-          <div class="hint">
-            Usuario demo: <b>admin</b><br>
-            Contraseña demo: <b>1234</b><br><br>
-            Los datos se guardan en este navegador usando almacenamiento local.
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function render() {
-    if (!isLogged()) {
-      renderLogin();
-      return;
+    function crearId() {
+      return "id-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
     }
 
-    document.getElementById("root").innerHTML = `
-      <div class="app">
-        <aside class="sidebar">
-          <div class="brand">
-            <div class="logo">SM</div>
-            <div>
-              <h1>${escapeHTML(state.settings.business)}</h1>
-              <p>${escapeHTML(state.settings.admin)}</p>
-            </div>
-          </div>
+    function fecha(dias) {
+      var d = new Date();
+      d.setDate(d.getDate() + dias);
+      return d.toISOString().slice(0, 10);
+    }
 
-          <div class="nav">
-            ${navButton("dashboard", "📊 Panel principal")}
-            ${navButton("clients", "👥 Clientes")}
-            ${navButton("accounts", "🔐 Cuentas")}
-            ${navButton("renewals", "⏰ Renovaciones")}
-            ${navButton("payments", "💰 Pagos")}
-            ${navButton("reports", "📄 Reportes")}
-            ${navButton("settings", "⚙️ Configuración")}
-            <button onclick="logout()">🚪 Cerrar sesión</button>
-          </div>
-        </aside>
+    function datosIniciales() {
+      var cuenta1 = crearId();
+      var cuenta2 = crearId();
 
-        <main class="main" id="main"></main>
-      </div>
-    `;
+      return {
+        config: {
+          negocio: "Streaming Manager",
+          admin: "Administrador",
+          moneda: "S/"
+        },
+        cuentas: [
+          {
+            id: cuenta1,
+            servicio: "Netflix",
+            correo: "netflix@email.com",
+            clave: "123456",
+            perfil: "Perfil 1",
+            pin: "0000",
+            pantallas: "4",
+            vence: fecha(25),
+            costo: "35",
+            notas: "Cuenta de ejemplo"
+          },
+          {
+            id: cuenta2,
+            servicio: "Disney+",
+            correo: "disney@email.com",
+            clave: "123456",
+            perfil: "Perfil 2",
+            pin: "1111",
+            pantallas: "2",
+            vence: fecha(12),
+            costo: "20",
+            notas: "Cuenta de ejemplo"
+          }
+        ],
+        clientes: [
+          {
+            id: crearId(),
+            nombre: "Cliente Demo",
+            telefono: "51999999999",
+            servicio: "Netflix",
+            cuentaId: cuenta1,
+            inicio: fecha(-10),
+            vence: fecha(5),
+            precio: "15",
+            notas: "Cliente de ejemplo"
+          }
+        ],
+        pagos: []
+      };
+    }
 
-    renderView();
-  }
-
-  function navButton(view, label) {
-    return `<button class="${currentView === view ? "active" : ""}" onclick="go('${view}')">${label}</button>`;
-  }
-
-  function go(view) {
-    currentView = view;
-    searchText = "";
-    render();
-  }
-
-  function renderView() {
-    if (currentView === "dashboard") renderDashboard();
-    if (currentView === "clients") renderClients();
-    if (currentView === "accounts") renderAccounts();
-    if (currentView === "renewals") renderRenewals();
-    if (currentView === "payments") renderPayments();
-    if (currentView === "reports") renderReports();
-    if (currentView === "settings") renderSettings();
-  }
-
-  function top(title, subtitle, button = "") {
-    return `
-      <div class="topbar">
-        <div>
-          <h2>${title}</h2>
-          <p>${subtitle}</p>
-        </div>
-        <div>${button}</div>
-      </div>
-    `;
-  }
-
-  function renderDashboard() {
-    const totalClients = state.clients.length;
-    const totalAccounts = state.accounts.length;
-    const expired = state.clients.filter(c => daysLeft(c.end) < 0).length;
-    const soon = state.clients.filter(c => daysLeft(c.end) >= 0 && daysLeft(c.end) <= 5).length;
-    const income = state.payments.reduce((s, p) => s + Number(p.amount || 0), 0);
-
-    const upcoming = [...state.clients]
-      .sort((a,b) => daysLeft(a.end) - daysLeft(b.end))
-      .slice(0, 8);
-
-    document.getElementById("main").innerHTML = `
-      ${top("Panel principal", "Resumen general de clientes, cuentas y renovaciones.")}
-
-      <div class="grid cards">
-        <div class="card">
-          <h3>Clientes</h3>
-          <div class="big">${totalClients}</div>
-        </div>
-        <div class="card">
-          <h3>Cuentas</h3>
-          <div class="big">${totalAccounts}</div>
-        </div>
-        <div class="card">
-          <h3>Por vencer</h3>
-          <div class="big">${soon}</div>
-        </div>
-        <div class="card">
-          <h3>Ingresos registrados</h3>
-          <div class="big">${money(income)}</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Renovaciones próximas</h3>
-        ${upcoming.length ? `
-          <div class="list">
-            ${upcoming.map(c => {
-              const s = statusInfo(c.end);
-              return `
-                <div class="item">
-                  <div>
-                    <strong>${escapeHTML(c.name)}</strong>
-                    <span>${escapeHTML(c.service)} · vence: ${c.end}</span>
-                  </div>
-                  <span class="badge ${s.cls}">${s.text}</span>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        ` : `<div class="empty">No hay clientes registrados.</div>`}
-      </div>
-    `;
-  }
-
-  function renderClients() {
-    const list = state.clients.filter(c =>
-      `${c.name} ${c.phone} ${c.service}`.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    document.getElementById("main").innerHTML = `
-      ${top("Clientes", "Registro de clientes y vencimientos.",
-        `<button class="btn" onclick="openClientForm()">+ Nuevo cliente</button>`
-      )}
-
-      <div class="card">
-        <div class="toolbar">
-          <input class="search" placeholder="Buscar cliente..." value="${escapeHTML(searchText)}" oninput="searchText=this.value; renderClients()">
-          <button class="btn secondary" onclick="exportCSV('clientes')">Exportar clientes</button>
-        </div>
-
-        ${list.length ? `
-          <table>
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Teléfono</th>
-                <th>Servicio</th>
-                <th>Cuenta</th>
-                <th>Inicio</th>
-                <th>Vence</th>
-                <th>Precio</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${list.map(c => {
-                const s = statusInfo(c.end);
-                return `
-                  <tr>
-                    <td><b>${escapeHTML(c.name)}</b></td>
-                    <td>${escapeHTML(c.phone)}</td>
-                    <td>${escapeHTML(c.service)}</td>
-                    <td>${escapeHTML(accountName(c.accountId))}</td>
-                    <td>${escapeHTML(c.start)}</td>
-                    <td>${escapeHTML(c.end)}</td>
-                    <td>${money(c.price)}</td>
-                    <td><span class="badge ${s.cls}">${s.text}</span></td>
-                    <td>
-                      <div class="actions">
-                        <button class="btn mini" onclick="renewClient('${c.id}')">Renovar</button>
-                        <button class="btn secondary mini" onclick="sendWhatsApp('${c.id}')">WhatsApp</button>
-                        <button class="btn secondary mini" onclick="openClientForm('${c.id}')">Editar</button>
-                        <button class="btn danger mini" onclick="deleteClient('${c.id}')">Eliminar</button>
-                      </div>
-                    </td>
-                  </tr>
-                `;
-              }).join("")}
-            </tbody>
-          </table>
-        ` : `<div class="empty">No hay clientes registrados.</div>`}
-      </div>
-    `;
-  }
-
-  function renderAccounts() {
-    const list = state.accounts.filter(a =>
-      `${a.service} ${a.email} ${a.profile}`.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    document.getElementById("main").innerHTML = `
-      ${top("Cuentas", "Control de correos, perfiles, claves y costos.",
-        `<button class="btn" onclick="openAccountForm()">+ Nueva cuenta</button>`
-      )}
-
-      <div class="card">
-        <div class="toolbar">
-          <input class="search" placeholder="Buscar cuenta..." value="${escapeHTML(searchText)}" oninput="searchText=this.value; renderAccounts()">
-          <button class="btn secondary" onclick="exportCSV('cuentas')">Exportar cuentas</button>
-        </div>
-
-        ${list.length ? `
-          <table>
-            <thead>
-              <tr>
-                <th>Servicio</th>
-                <th>Correo</th>
-                <th>Clave</th>
-                <th>Perfil</th>
-                <th>PIN</th>
-                <th>Pantallas</th>
-                <th>Vence</th>
-                <th>Costo</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${list.map(a => {
-                const s = statusInfo(a.expiry);
-                return `
-                  <tr>
-                    <td><b>${escapeHTML(a.service)}</b></td>
-                    <td>${escapeHTML(a.email)}</td>
-                    <td>${escapeHTML(a.password)}</td>
-                    <td>${escapeHTML(a.profile)}</td>
-                    <td>${escapeHTML(a.pin)}</td>
-                    <td>${escapeHTML(a.screens)}</td>
-                    <td><span class="badge ${s.cls}">${escapeHTML(a.expiry)}</span></td>
-                    <td>${money(a.cost)}</td>
-                    <td>
-                      <div class="actions">
-                        <button class="btn secondary mini" onclick="openAccountForm('${a.id}')">Editar</button>
-                        <button class="btn danger mini" onclick="deleteAccount('${a.id}')">Eliminar</button>
-                      </div>
-                    </td>
-                  </tr>
-                `;
-              }).join("")}
-            </tbody>
-          </table>
-        ` : `<div class="empty">No hay cuentas registradas.</div>`}
-      </div>
-    `;
-  }
-
-  function renderRenewals() {
-    const list = [...state.clients].sort((a,b) => daysLeft(a.end) - daysLeft(b.end));
-
-    document.getElementById("main").innerHTML = `
-      ${top("Renovaciones", "Clientes ordenados por fecha de vencimiento.")}
-
-      <div class="card">
-        ${list.length ? `
-          <div class="list">
-            ${list.map(c => {
-              const s = statusInfo(c.end);
-              return `
-                <div class="item">
-                  <div>
-                    <strong>${escapeHTML(c.name)} · ${escapeHTML(c.service)}</strong>
-                    <span>Tel: ${escapeHTML(c.phone)} · vence: ${escapeHTML(c.end)} · ${money(c.price)}</span>
-                  </div>
-                  <div class="actions">
-                    <span class="badge ${s.cls}">${s.text}</span>
-                    <button class="btn mini" onclick="renewClient('${c.id}')">Renovar</button>
-                    <button class="btn secondary mini" onclick="sendWhatsApp('${c.id}')">Avisar</button>
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        ` : `<div class="empty">No hay renovaciones.</div>`}
-      </div>
-    `;
-  }
-
-  function renderPayments() {
-    const list = [...state.payments].sort((a,b) => b.date.localeCompare(a.date));
-
-    document.getElementById("main").innerHTML = `
-      ${top("Pagos", "Registro de pagos recibidos.",
-        `<button class="btn" onclick="openPaymentForm()">+ Nuevo pago</button>`
-      )}
-
-      <div class="card">
-        ${list.length ? `
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Monto</th>
-                <th>Método</th>
-                <th>Detalle</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${list.map(p => `
-                <tr>
-                  <td>${escapeHTML(p.date)}</td>
-                  <td>${escapeHTML(clientName(p.clientId))}</td>
-                  <td>${money(p.amount)}</td>
-                  <td>${escapeHTML(p.method)}</td>
-                  <td>${escapeHTML(p.detail)}</td>
-                  <td><button class="btn danger mini" onclick="deletePayment('${p.id}')">Eliminar</button></td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-        ` : `<div class="empty">No hay pagos registrados.</div>`}
-      </div>
-    `;
-  }
-
-  function renderReports() {
-    const income = state.payments.reduce((s, p) => s + Number(p.amount || 0), 0);
-    const cost = state.accounts.reduce((s, a) => s + Number(a.cost || 0), 0);
-    const profit = income - cost;
-
-    document.getElementById("main").innerHTML = `
-      ${top("Reportes", "Resumen económico básico.")}
-
-      <div class="grid cards">
-        <div class="card">
-          <h3>Ingresos</h3>
-          <div class="big">${money(income)}</div>
-        </div>
-        <div class="card">
-          <h3>Costos de cuentas</h3>
-          <div class="big">${money(cost)}</div>
-        </div>
-        <div class="card">
-          <h3>Ganancia estimada</h3>
-          <div class="big">${money(profit)}</div>
-        </div>
-        <div class="card">
-          <h3>Clientes vencidos</h3>
-          <div class="big">${state.clients.filter(c => daysLeft(c.end) < 0).length}</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>Exportar información</h3>
-        <div class="actions">
-          <button class="btn" onclick="exportCSV('clientes')">Exportar clientes</button>
-          <button class="btn" onclick="exportCSV('cuentas')">Exportar cuentas</button>
-          <button class="btn" onclick="exportCSV('pagos')">Exportar pagos</button>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderSettings() {
-    document.getElementById("main").innerHTML = `
-      ${top("Configuración", "Datos generales del negocio.")}
-
-      <div class="card">
-        <div class="form-grid">
-          <div>
-            <label>Nombre del negocio</label>
-            <input id="setBusiness" value="${escapeHTML(state.settings.business)}">
-          </div>
-          <div>
-            <label>Nombre del administrador</label>
-            <input id="setAdmin" value="${escapeHTML(state.settings.admin)}">
-          </div>
-          <div>
-            <label>Moneda</label>
-            <input id="setCurrency" value="${escapeHTML(state.settings.currency)}">
-          </div>
-          <div>
-            <label>WhatsApp del negocio</label>
-            <input id="setPhone" value="${escapeHTML(state.settings.phone)}">
-          </div>
-        </div>
-
-        <br>
-
-        <button class="btn" onclick="saveSettings()">Guardar configuración</button>
-        <button class="btn danger" onclick="resetData()">Borrar todo</button>
-
-        <p class="hint">
-          Este panel guarda los datos en el navegador. Si abres la página en otra computadora o celular, no verás los mismos datos.
-        </p>
-      </div>
-    `;
-  }
-
-  function openModal(title, html, onSubmit) {
-    const modalBg = document.getElementById("modalBg");
-    const modal = document.getElementById("modal");
-
-    modal.innerHTML = `
-      <h3>${title}</h3>
-      <form id="modalForm">
-        ${html}
-        <div class="modal-actions">
-          <button type="button" class="btn secondary" onclick="closeModal()">Cancelar</button>
-          <button type="submit" class="btn">Guardar</button>
-        </div>
-      </form>
-    `;
-
-    document.getElementById("modalForm").onsubmit = function(e) {
-      e.preventDefault();
-      onSubmit(new FormData(e.target));
-    };
-
-    modalBg.style.display = "flex";
-  }
-
-  function closeModal() {
-    document.getElementById("modalBg").style.display = "none";
-  }
-
-  function openClientForm(id = null) {
-    const c = id ? state.clients.find(x => x.id === id) : {};
-    const accountOptions = state.accounts.map(a =>
-      `<option value="${a.id}" ${c.accountId === a.id ? "selected" : ""}>${escapeHTML(a.service)} - ${escapeHTML(a.email)}</option>`
-    ).join("");
-
-    openModal(id ? "Editar cliente" : "Nuevo cliente", `
-      <div class="form-grid">
-        <div>
-          <label>Nombre</label>
-          <input name="name" required value="${escapeHTML(c.name || "")}">
-        </div>
-        <div>
-          <label>Teléfono / WhatsApp</label>
-          <input name="phone" value="${escapeHTML(c.phone || "")}">
-        </div>
-        <div>
-          <label>Servicio</label>
-          <input name="service" required value="${escapeHTML(c.service || "")}">
-        </div>
-        <div>
-          <label>Cuenta asignada</label>
-          <select name="accountId">
-            <option value="">Sin cuenta</option>
-            ${accountOptions}
-          </select>
-        </div>
-        <div>
-          <label>Fecha de inicio</label>
-          <input type="date" name="start" value="${escapeHTML(c.start || todayPlus(0))}">
-        </div>
-        <div>
-          <label>Fecha de vencimiento</label>
-          <input type="date" name="end" required value="${escapeHTML(c.end || todayPlus(30))}">
-        </div>
-        <div>
-          <label>Precio</label>
-          <input type="number" step="0.01" name="price" value="${escapeHTML(c.price || "")}">
-        </div>
-        <div class="full">
-          <label>Notas</label>
-          <textarea name="notes">${escapeHTML(c.notes || "")}</textarea>
-        </div>
-      </div>
-    `, form => {
-      const data = Object.fromEntries(form.entries());
-      if (id) {
-        state.clients = state.clients.map(x => x.id === id ? { ...x, ...data } : x);
-      } else {
-        state.clients.push({ id: crypto.randomUUID(), ...data });
+    function cargar() {
+      try {
+        var guardado = localStorage.getItem(STORAGE_KEY);
+        if (guardado) {
+          var data = JSON.parse(guardado);
+          if (
+            data &&
+            data.config &&
+            Array.isArray(data.cuentas) &&
+            Array.isArray(data.clientes) &&
+            Array.isArray(data.pagos)
+          ) {
+            return data;
+          }
+        }
+      } catch (e) {
+        console.log("Error cargando datos:", e);
       }
-      saveState();
-      closeModal();
-      render();
-    });
-  }
 
-  function openAccountForm(id = null) {
-    const a = id ? state.accounts.find(x => x.id === id) : {};
+      var nuevo = datosIniciales();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nuevo));
+      return nuevo;
+    }
 
-    openModal(id ? "Editar cuenta" : "Nueva cuenta", `
-      <div class="form-grid">
-        <div>
-          <label>Servicio</label>
-          <input name="service" required value="${escapeHTML(a.service || "")}">
-        </div>
-        <div>
-          <label>Correo</label>
-          <input name="email" value="${escapeHTML(a.email || "")}">
-        </div>
-        <div>
-          <label>Contraseña</label>
-          <input name="password" value="${escapeHTML(a.password || "")}">
-        </div>
-        <div>
-          <label>Perfil</label>
-          <input name="profile" value="${escapeHTML(a.profile || "")}">
-        </div>
-        <div>
-          <label>PIN</label>
-          <input name="pin" value="${escapeHTML(a.pin || "")}">
-        </div>
-        <div>
-          <label>Pantallas</label>
-          <input name="screens" value="${escapeHTML(a.screens || "")}">
-        </div>
-        <div>
-          <label>Vencimiento de cuenta</label>
-          <input type="date" name="expiry" value="${escapeHTML(a.expiry || todayPlus(30))}">
-        </div>
-        <div>
-          <label>Costo</label>
-          <input type="number" step="0.01" name="cost" value="${escapeHTML(a.cost || "")}">
-        </div>
-        <div class="full">
-          <label>Notas</label>
-          <textarea name="notes">${escapeHTML(a.notes || "")}</textarea>
-        </div>
-      </div>
-    `, form => {
-      const data = Object.fromEntries(form.entries());
-      if (id) {
-        state.accounts = state.accounts.map(x => x.id === id ? { ...x, ...data } : x);
-      } else {
-        state.accounts.push({ id: crypto.randomUUID(), ...data });
+    var estado = cargar();
+
+    function guardar() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+    }
+
+    function texto(v) {
+      return String(v == null ? "" : v)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function dinero(v) {
+      var n = Number(v || 0);
+      return estado.config.moneda + " " + n.toFixed(2);
+    }
+
+    function diasRestantes(fechaFinal) {
+      var hoy = new Date();
+      hoy.setHours(0, 0, 0, 0);
+      var fin = new Date(fechaFinal + "T00:00:00");
+      return Math.ceil((fin - hoy) / 86400000);
+    }
+
+    function estadoVence(fechaFinal) {
+      var d = diasRestantes(fechaFinal);
+
+      if (d < 0) {
+        return { clase: "bad", texto: "Vencido" };
       }
-      saveState();
-      closeModal();
+
+      if (d === 0) {
+        return { clase: "today", texto: "Vence hoy" };
+      }
+
+      if (d <= 5) {
+        return { clase: "warn", texto: "Vence en " + d + " días" };
+      }
+
+      return { clase: "ok", texto: "Activo" };
+    }
+
+    function cuentaNombre(id) {
+      for (var i = 0; i < estado.cuentas.length; i++) {
+        if (estado.cuentas[i].id === id) {
+          return estado.cuentas[i].servicio + " - " + estado.cuentas[i].correo;
+        }
+      }
+      return "Sin cuenta";
+    }
+
+    function clienteNombre(id) {
+      for (var i = 0; i < estado.clientes.length; i++) {
+        if (estado.clientes[i].id === id) {
+          return estado.clientes[i].nombre;
+        }
+      }
+      return "Sin cliente";
+    }
+
+    function render() {
+      if (localStorage.getItem(AUTH_KEY) !== "ok") {
+        renderLogin();
+        return;
+      }
+
+      document.getElementById("app").innerHTML =
+        '<div class="app">' +
+          '<aside class="sidebar">' +
+            '<div class="logo-box">' +
+              '<div class="logo">SM</div>' +
+              '<div>' +
+                '<h1>' + texto(estado.config.negocio) + '</h1>' +
+                '<div class="muted">' + texto(estado.config.admin) + '</div>' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="nav">' +
+              botonNav("inicio", "📊 Panel principal") +
+              botonNav("clientes", "👥 Clientes") +
+              botonNav("cuentas", "🔐 Cuentas") +
+              botonNav("renovaciones", "⏰ Renovaciones") +
+              botonNav("pagos", "💰 Pagos") +
+              botonNav("reportes", "📄 Reportes") +
+              botonNav("configuracion", "⚙️ Configuración") +
+              '<button onclick="cerrarSesion()">🚪 Cerrar sesión</button>' +
+            '</div>' +
+          '</aside>' +
+
+          '<main class="main" id="contenido"></main>' +
+        '</div>';
+
+      renderVista();
+    }
+
+    function botonNav(id, label) {
+      var activo = vista === id ? "active" : "";
+      return '<button class="' + activo + '" onclick="ir(\'' + id + '\')">' + label + '</button>';
+    }
+
+    function renderLogin() {
+      document.getElementById("app").innerHTML =
+        '<div class="login">' +
+          '<div class="login-card">' +
+            '<div class="logo-box">' +
+              '<div class="logo">SM</div>' +
+              '<div>' +
+                '<h1>Streaming Manager</h1>' +
+                '<p class="muted">Panel de control para cuentas de streaming</p>' +
+              '</div>' +
+            '</div>' +
+
+            '<label>Usuario</label>' +
+            '<input id="usuario" value="admin">' +
+            '<br><br>' +
+
+            '<label>Contraseña</label>' +
+            '<input id="clave" type="password" value="1234">' +
+            '<br><br>' +
+
+            '<button class="btn" style="width:100%" onclick="iniciarSesion()">Ingresar</button>' +
+
+            '<p class="note">' +
+              'Usuario: <b>admin</b><br>' +
+              'Contraseña: <b>1234</b><br><br>' +
+              'Los datos se guardan en este navegador.' +
+            '</p>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function iniciarSesion() {
+      var u = document.getElementById("usuario").value.trim();
+      var c = document.getElementById("clave").value.trim();
+
+      if (u === "admin" && c === "1234") {
+        localStorage.setItem(AUTH_KEY, "ok");
+        render();
+      } else {
+        alert("Usuario o contraseña incorrectos.");
+      }
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem(AUTH_KEY);
       render();
-    });
-  }
+    }
 
-  function openPaymentForm() {
-    const options = state.clients.map(c =>
-      `<option value="${c.id}">${escapeHTML(c.name)} - ${escapeHTML(c.service)}</option>`
-    ).join("");
-
-    openModal("Nuevo pago", `
-      <div class="form-grid">
-        <div>
-          <label>Fecha</label>
-          <input type="date" name="date" value="${todayPlus(0)}">
-        </div>
-        <div>
-          <label>Cliente</label>
-          <select name="clientId">${options}</select>
-        </div>
-        <div>
-          <label>Monto</label>
-          <input type="number" step="0.01" name="amount" required>
-        </div>
-        <div>
-          <label>Método</label>
-          <select name="method">
-            <option>Yape</option>
-            <option>Plin</option>
-            <option>Transferencia</option>
-            <option>Efectivo</option>
-            <option>Otro</option>
-          </select>
-        </div>
-        <div class="full">
-          <label>Detalle</label>
-          <textarea name="detail"></textarea>
-        </div>
-      </div>
-    `, form => {
-      state.payments.push({ id: crypto.randomUUID(), ...Object.fromEntries(form.entries()) });
-      saveState();
-      closeModal();
+    function ir(v) {
+      vista = v;
+      busqueda = "";
       render();
-    });
-  }
+    }
 
-  function renewClient(id) {
-    const c = state.clients.find(x => x.id === id);
-    if (!c) return;
+    function renderVista() {
+      if (vista === "inicio") renderInicio();
+      if (vista === "clientes") renderClientes();
+      if (vista === "cuentas") renderCuentas();
+      if (vista === "renovaciones") renderRenovaciones();
+      if (vista === "pagos") renderPagos();
+      if (vista === "reportes") renderReportes();
+      if (vista === "configuracion") renderConfiguracion();
+    }
 
-    openModal("Renovar cliente", `
-      <div class="form-grid">
-        <div>
-          <label>Cliente</label>
-          <input disabled value="${escapeHTML(c.name)}">
-        </div>
-        <div>
-          <label>Nueva fecha de vencimiento</label>
-          <input type="date" name="end" value="${todayPlus(30)}">
-        </div>
-        <div>
-          <label>Monto pagado</label>
-          <input type="number" step="0.01" name="amount" value="${escapeHTML(c.price || "")}">
-        </div>
-        <div>
-          <label>Método</label>
-          <select name="method">
-            <option>Yape</option>
-            <option>Plin</option>
-            <option>Transferencia</option>
-            <option>Efectivo</option>
-            <option>Otro</option>
-          </select>
-        </div>
-      </div>
-    `, form => {
-      const data = Object.fromEntries(form.entries());
-      c.end = data.end;
-      state.payments.push({
-        id: crypto.randomUUID(),
-        date: todayPlus(0),
-        clientId: c.id,
-        amount: data.amount,
-        method: data.method,
-        detail: "Renovación de servicio"
+    function cabecera(titulo, subtitulo, boton) {
+      return (
+        '<div class="top">' +
+          '<div>' +
+            '<h2>' + titulo + '</h2>' +
+            '<p class="muted">' + subtitulo + '</p>' +
+          '</div>' +
+          '<div>' + (boton || "") + '</div>' +
+        '</div>'
+      );
+    }
+
+    function renderInicio() {
+      var clientes = estado.clientes.length;
+      var cuentas = estado.cuentas.length;
+      var porVencer = estado.clientes.filter(function(c) {
+        var d = diasRestantes(c.vence);
+        return d >= 0 && d <= 5;
+      }).length;
+
+      var vencidos = estado.clientes.filter(function(c) {
+        return diasRestantes(c.vence) < 0;
+      }).length;
+
+      var ingresos = estado.pagos.reduce(function(s, p) {
+        return s + Number(p.monto || 0);
+      }, 0);
+
+      var proximos = estado.clientes.slice().sort(function(a, b) {
+        return diasRestantes(a.vence) - diasRestantes(b.vence);
+      }).slice(0, 8);
+
+      var html =
+        cabecera("Panel principal", "Resumen general del negocio.", "") +
+
+        '<div class="grid cards">' +
+          card("Clientes", clientes) +
+          card("Cuentas", cuentas) +
+          card("Por vencer", porVencer) +
+          card("Vencidos", vencidos) +
+        '</div>' +
+
+        '<div class="grid cards">' +
+          card("Ingresos registrados", dinero(ingresos)) +
+          card("Pagos", estado.pagos.length) +
+          card("Servicios activos", estado.clientes.filter(function(c){ return diasRestantes(c.vence) >= 0; }).length) +
+          card("Total cuentas", estado.cuentas.length) +
+        '</div>' +
+
+        '<div class="card">' +
+          '<h3>Renovaciones próximas</h3>';
+
+      if (proximos.length === 0) {
+        html += '<div class="empty">No hay clientes registrados.</div>';
+      } else {
+        html += '<div class="list">';
+        proximos.forEach(function(c) {
+          var e = estadoVence(c.vence);
+          html +=
+            '<div class="item">' +
+              '<div>' +
+                '<strong>' + texto(c.nombre) + '</strong><br>' +
+                '<span class="muted">' + texto(c.servicio) + ' · vence: ' + texto(c.vence) + '</span>' +
+              '</div>' +
+              '<span class="badge ' + e.clase + '">' + e.texto + '</span>' +
+            '</div>';
+        });
+        html += '</div>';
+      }
+
+      html += '</div>';
+
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function card(titulo, valor) {
+      return (
+        '<div class="card">' +
+          '<div class="card-title">' + titulo + '</div>' +
+          '<div class="big">' + valor + '</div>' +
+        '</div>'
+      );
+    }
+
+    function renderClientes() {
+      var lista = estado.clientes.filter(function(c) {
+        var t = (c.nombre + " " + c.telefono + " " + c.servicio).toLowerCase();
+        return t.indexOf(busqueda.toLowerCase()) !== -1;
       });
-      saveState();
-      closeModal();
+
+      var html =
+        cabecera(
+          "Clientes",
+          "Registro de clientes, servicios y vencimientos.",
+          '<button class="btn" onclick="formCliente()">+ Nuevo cliente</button>'
+        ) +
+
+        '<div class="card">' +
+          '<div class="toolbar">' +
+            '<input class="search" placeholder="Buscar cliente..." value="' + texto(busqueda) + '" oninput="filtrar(this.value)">' +
+            '<button class="btn secondary" onclick="exportarCSV(\'clientes\')">Exportar clientes</button>' +
+          '</div>';
+
+      if (lista.length === 0) {
+        html += '<div class="empty">No hay clientes registrados.</div>';
+      } else {
+        html +=
+          '<table>' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Cliente</th>' +
+                '<th>Teléfono</th>' +
+                '<th>Servicio</th>' +
+                '<th>Cuenta</th>' +
+                '<th>Inicio</th>' +
+                '<th>Vence</th>' +
+                '<th>Precio</th>' +
+                '<th>Estado</th>' +
+                '<th>Acciones</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>';
+
+        lista.forEach(function(c) {
+          var e = estadoVence(c.vence);
+          html +=
+            '<tr>' +
+              '<td><b>' + texto(c.nombre) + '</b></td>' +
+              '<td>' + texto(c.telefono) + '</td>' +
+              '<td>' + texto(c.servicio) + '</td>' +
+              '<td>' + texto(cuentaNombre(c.cuentaId)) + '</td>' +
+              '<td>' + texto(c.inicio) + '</td>' +
+              '<td>' + texto(c.vence) + '</td>' +
+              '<td>' + dinero(c.precio) + '</td>' +
+              '<td><span class="badge ' + e.clase + '">' + e.texto + '</span></td>' +
+              '<td>' +
+                '<div class="actions">' +
+                  '<button class="btn small" onclick="renovarCliente(\'' + c.id + '\')">Renovar</button>' +
+                  '<button class="btn secondary small" onclick="whatsapp(\'' + c.id + '\')">WhatsApp</button>' +
+                  '<button class="btn secondary small" onclick="formCliente(\'' + c.id + '\')">Editar</button>' +
+                  '<button class="btn danger small" onclick="eliminarCliente(\'' + c.id + '\')">Eliminar</button>' +
+                '</div>' +
+              '</td>' +
+            '</tr>';
+        });
+
+        html += '</tbody></table>';
+      }
+
+      html += '</div>';
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function renderCuentas() {
+      var lista = estado.cuentas.filter(function(a) {
+        var t = (a.servicio + " " + a.correo + " " + a.perfil).toLowerCase();
+        return t.indexOf(busqueda.toLowerCase()) !== -1;
+      });
+
+      var html =
+        cabecera(
+          "Cuentas",
+          "Control de correos, claves, perfiles y costos.",
+          '<button class="btn" onclick="formCuenta()">+ Nueva cuenta</button>'
+        ) +
+
+        '<div class="card">' +
+          '<div class="toolbar">' +
+            '<input class="search" placeholder="Buscar cuenta..." value="' + texto(busqueda) + '" oninput="filtrar(this.value)">' +
+            '<button class="btn secondary" onclick="exportarCSV(\'cuentas\')">Exportar cuentas</button>' +
+          '</div>';
+
+      if (lista.length === 0) {
+        html += '<div class="empty">No hay cuentas registradas.</div>';
+      } else {
+        html +=
+          '<table>' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Servicio</th>' +
+                '<th>Correo</th>' +
+                '<th>Clave</th>' +
+                '<th>Perfil</th>' +
+                '<th>PIN</th>' +
+                '<th>Pantallas</th>' +
+                '<th>Vence</th>' +
+                '<th>Costo</th>' +
+                '<th>Acciones</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>';
+
+        lista.forEach(function(a) {
+          var e = estadoVence(a.vence);
+          html +=
+            '<tr>' +
+              '<td><b>' + texto(a.servicio) + '</b></td>' +
+              '<td>' + texto(a.correo) + '</td>' +
+              '<td>' + texto(a.clave) + '</td>' +
+              '<td>' + texto(a.perfil) + '</td>' +
+              '<td>' + texto(a.pin) + '</td>' +
+              '<td>' + texto(a.pantallas) + '</td>' +
+              '<td><span class="badge ' + e.clase + '">' + texto(a.vence) + '</span></td>' +
+              '<td>' + dinero(a.costo) + '</td>' +
+              '<td>' +
+                '<div class="actions">' +
+                  '<button class="btn secondary small" onclick="formCuenta(\'' + a.id + '\')">Editar</button>' +
+                  '<button class="btn danger small" onclick="eliminarCuenta(\'' + a.id + '\')">Eliminar</button>' +
+                '</div>' +
+              '</td>' +
+            '</tr>';
+        });
+
+        html += '</tbody></table>';
+      }
+
+      html += '</div>';
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function renderRenovaciones() {
+      var lista = estado.clientes.slice().sort(function(a, b) {
+        return diasRestantes(a.vence) - diasRestantes(b.vence);
+      });
+
+      var html =
+        cabecera("Renovaciones", "Clientes ordenados por vencimiento.", "") +
+        '<div class="card">';
+
+      if (lista.length === 0) {
+        html += '<div class="empty">No hay renovaciones.</div>';
+      } else {
+        html += '<div class="list">';
+        lista.forEach(function(c) {
+          var e = estadoVence(c.vence);
+          html +=
+            '<div class="item">' +
+              '<div>' +
+                '<strong>' + texto(c.nombre) + ' · ' + texto(c.servicio) + '</strong><br>' +
+                '<span class="muted">Tel: ' + texto(c.telefono) + ' · vence: ' + texto(c.vence) + ' · ' + dinero(c.precio) + '</span>' +
+              '</div>' +
+              '<div class="actions">' +
+                '<span class="badge ' + e.clase + '">' + e.texto + '</span>' +
+                '<button class="btn small" onclick="renovarCliente(\'' + c.id + '\')">Renovar</button>' +
+                '<button class="btn secondary small" onclick="whatsapp(\'' + c.id + '\')">Avisar</button>' +
+              '</div>' +
+            '</div>';
+        });
+        html += '</div>';
+      }
+
+      html += '</div>';
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function renderPagos() {
+      var lista = estado.pagos.slice().sort(function(a, b) {
+        return String(b.fecha).localeCompare(String(a.fecha));
+      });
+
+      var html =
+        cabecera(
+          "Pagos",
+          "Registro de pagos recibidos.",
+          '<button class="btn" onclick="formPago()">+ Nuevo pago</button>'
+        ) +
+
+        '<div class="card">';
+
+      if (lista.length === 0) {
+        html += '<div class="empty">No hay pagos registrados.</div>';
+      } else {
+        html +=
+          '<table>' +
+            '<thead>' +
+              '<tr>' +
+                '<th>Fecha</th>' +
+                '<th>Cliente</th>' +
+                '<th>Monto</th>' +
+                '<th>Método</th>' +
+                '<th>Detalle</th>' +
+                '<th>Acciones</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>';
+
+        lista.forEach(function(p) {
+          html +=
+            '<tr>' +
+              '<td>' + texto(p.fecha) + '</td>' +
+              '<td>' + texto(clienteNombre(p.clienteId)) + '</td>' +
+              '<td>' + dinero(p.monto) + '</td>' +
+              '<td>' + texto(p.metodo) + '</td>' +
+              '<td>' + texto(p.detalle) + '</td>' +
+              '<td><button class="btn danger small" onclick="eliminarPago(\'' + p.id + '\')">Eliminar</button></td>' +
+            '</tr>';
+        });
+
+        html += '</tbody></table>';
+      }
+
+      html += '</div>';
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function renderReportes() {
+      var ingresos = estado.pagos.reduce(function(s, p) {
+        return s + Number(p.monto || 0);
+      }, 0);
+
+      var costos = estado.cuentas.reduce(function(s, a) {
+        return s + Number(a.costo || 0);
+      }, 0);
+
+      var ganancia = ingresos - costos;
+
+      var html =
+        cabecera("Reportes", "Resumen económico básico.", "") +
+
+        '<div class="grid cards">' +
+          card("Ingresos", dinero(ingresos)) +
+          card("Costos de cuentas", dinero(costos)) +
+          card("Ganancia estimada", dinero(ganancia)) +
+          card("Clientes vencidos", estado.clientes.filter(function(c){ return diasRestantes(c.vence) < 0; }).length) +
+        '</div>' +
+
+        '<div class="card">' +
+          '<h3>Exportar información</h3>' +
+          '<div class="actions">' +
+            '<button class="btn" onclick="exportarCSV(\'clientes\')">Exportar clientes</button>' +
+            '<button class="btn" onclick="exportarCSV(\'cuentas\')">Exportar cuentas</button>' +
+            '<button class="btn" onclick="exportarCSV(\'pagos\')">Exportar pagos</button>' +
+          '</div>' +
+        '</div>';
+
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function renderConfiguracion() {
+      var html =
+        cabecera("Configuración", "Datos generales del sistema.", "") +
+
+        '<div class="card">' +
+          '<div class="form-grid">' +
+            '<div>' +
+              '<label>Nombre del negocio</label>' +
+              '<input id="cfgNegocio" value="' + texto(estado.config.negocio) + '">' +
+            '</div>' +
+            '<div>' +
+              '<label>Administrador</label>' +
+              '<input id="cfgAdmin" value="' + texto(estado.config.admin) + '">' +
+            '</div>' +
+            '<div>' +
+              '<label>Moneda</label>' +
+              '<input id="cfgMoneda" value="' + texto(estado.config.moneda) + '">' +
+            '</div>' +
+          '</div>' +
+
+          '<br>' +
+          '<div class="actions">' +
+            '<button class="btn" onclick="guardarConfig()">Guardar configuración</button>' +
+            '<button class="btn danger" onclick="borrarTodo()">Borrar todo</button>' +
+          '</div>' +
+
+          '<p class="note">' +
+            'Este sistema funciona en GitHub Pages y guarda los datos en el navegador. ' +
+            'Si entras desde otro celular o computadora, no aparecerán los mismos registros.' +
+          '</p>' +
+        '</div>';
+
+      document.getElementById("contenido").innerHTML = html;
+    }
+
+    function filtrar(valor) {
+      busqueda = valor;
+      renderVista();
+    }
+
+    function abrirModal(titulo, contenido, guardarFn) {
+      document.getElementById("modalBg").style.display = "flex";
+      document.getElementById("modal").innerHTML =
+        '<h3>' + titulo + '</h3>' +
+        '<form id="formModal">' +
+          contenido +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn secondary" onclick="cerrarModal()">Cancelar</button>' +
+            '<button type="submit" class="btn">Guardar</button>' +
+          '</div>' +
+        '</form>';
+
+      document.getElementById("formModal").onsubmit = function(e) {
+        e.preventDefault();
+        var fd = new FormData(e.target);
+        var obj = {};
+        fd.forEach(function(value, key) {
+          obj[key] = value;
+        });
+        guardarFn(obj);
+      };
+    }
+
+    function cerrarModal() {
+      document.getElementById("modalBg").style.display = "none";
+    }
+
+    function formCliente(id) {
+      var c = {
+        nombre: "",
+        telefono: "",
+        servicio: "",
+        cuentaId: "",
+        inicio: fecha(0),
+        vence: fecha(30),
+        precio: "",
+        notas: ""
+      };
+
+      if (id) {
+        for (var i = 0; i < estado.clientes.length; i++) {
+          if (estado.clientes[i].id === id) c = estado.clientes[i];
+        }
+      }
+
+      var opciones = '<option value="">Sin cuenta</option>';
+      estado.cuentas.forEach(function(a) {
+        var sel = c.cuentaId === a.id ? "selected" : "";
+        opciones += '<option value="' + texto(a.id) + '" ' + sel + '>' + texto(a.servicio) + ' - ' + texto(a.correo) + '</option>';
+      });
+
+      abrirModal(
+        id ? "Editar cliente" : "Nuevo cliente",
+        '<div class="form-grid">' +
+          '<div>' +
+            '<label>Nombre</label>' +
+            '<input name="nombre" required value="' + texto(c.nombre) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Teléfono / WhatsApp</label>' +
+            '<input name="telefono" value="' + texto(c.telefono) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Servicio</label>' +
+            '<input name="servicio" required value="' + texto(c.servicio) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Cuenta asignada</label>' +
+            '<select name="cuentaId">' + opciones + '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label>Fecha de inicio</label>' +
+            '<input type="date" name="inicio" value="' + texto(c.inicio) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Fecha de vencimiento</label>' +
+            '<input type="date" name="vence" required value="' + texto(c.vence) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Precio</label>' +
+            '<input type="number" step="0.01" name="precio" value="' + texto(c.precio) + '">' +
+          '</div>' +
+          '<div class="full">' +
+            '<label>Notas</label>' +
+            '<textarea name="notas">' + texto(c.notas) + '</textarea>' +
+          '</div>' +
+        '</div>',
+        function(data) {
+          if (id) {
+            estado.clientes = estado.clientes.map(function(x) {
+              return x.id === id ? Object.assign({}, x, data) : x;
+            });
+          } else {
+            data.id = crearId();
+            estado.clientes.push(data);
+          }
+
+          guardar();
+          cerrarModal();
+          render();
+        }
+      );
+    }
+
+    function formCuenta(id) {
+      var a = {
+        servicio: "",
+        correo: "",
+        clave: "",
+        perfil: "",
+        pin: "",
+        pantallas: "",
+        vence: fecha(30),
+        costo: "",
+        notas: ""
+      };
+
+      if (id) {
+        for (var i = 0; i < estado.cuentas.length; i++) {
+          if (estado.cuentas[i].id === id) a = estado.cuentas[i];
+        }
+      }
+
+      abrirModal(
+        id ? "Editar cuenta" : "Nueva cuenta",
+        '<div class="form-grid">' +
+          '<div>' +
+            '<label>Servicio</label>' +
+            '<input name="servicio" required value="' + texto(a.servicio) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Correo</label>' +
+            '<input name="correo" value="' + texto(a.correo) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Contraseña</label>' +
+            '<input name="clave" value="' + texto(a.clave) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Perfil</label>' +
+            '<input name="perfil" value="' + texto(a.perfil) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>PIN</label>' +
+            '<input name="pin" value="' + texto(a.pin) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Pantallas</label>' +
+            '<input name="pantallas" value="' + texto(a.pantallas) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Fecha de vencimiento</label>' +
+            '<input type="date" name="vence" value="' + texto(a.vence) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Costo</label>' +
+            '<input type="number" step="0.01" name="costo" value="' + texto(a.costo) + '">' +
+          '</div>' +
+          '<div class="full">' +
+            '<label>Notas</label>' +
+            '<textarea name="notas">' + texto(a.notas) + '</textarea>' +
+          '</div>' +
+        '</div>',
+        function(data) {
+          if (id) {
+            estado.cuentas = estado.cuentas.map(function(x) {
+              return x.id === id ? Object.assign({}, x, data) : x;
+            });
+          } else {
+            data.id = crearId();
+            estado.cuentas.push(data);
+          }
+
+          guardar();
+          cerrarModal();
+          render();
+        }
+      );
+    }
+
+    function formPago() {
+      var opciones = "";
+      estado.clientes.forEach(function(c) {
+        opciones += '<option value="' + texto(c.id) + '">' + texto(c.nombre) + ' - ' + texto(c.servicio) + '</option>';
+      });
+
+      if (estado.clientes.length === 0) {
+        alert("Primero registra un cliente.");
+        return;
+      }
+
+      abrirModal(
+        "Nuevo pago",
+        '<div class="form-grid">' +
+          '<div>' +
+            '<label>Fecha</label>' +
+            '<input type="date" name="fecha" value="' + fecha(0) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Cliente</label>' +
+            '<select name="clienteId">' + opciones + '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label>Monto</label>' +
+            '<input type="number" step="0.01" name="monto" required>' +
+          '</div>' +
+          '<div>' +
+            '<label>Método</label>' +
+            '<select name="metodo">' +
+              '<option>Yape</option>' +
+              '<option>Plin</option>' +
+              '<option>Transferencia</option>' +
+              '<option>Efectivo</option>' +
+              '<option>Otro</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="full">' +
+            '<label>Detalle</label>' +
+            '<textarea name="detalle"></textarea>' +
+          '</div>' +
+        '</div>',
+        function(data) {
+          data.id = crearId();
+          estado.pagos.push(data);
+          guardar();
+          cerrarModal();
+          render();
+        }
+      );
+    }
+
+    function renovarCliente(id) {
+      var c = null;
+
+      for (var i = 0; i < estado.clientes.length; i++) {
+        if (estado.clientes[i].id === id) c = estado.clientes[i];
+      }
+
+      if (!c) return;
+
+      abrirModal(
+        "Renovar cliente",
+        '<div class="form-grid">' +
+          '<div>' +
+            '<label>Cliente</label>' +
+            '<input disabled value="' + texto(c.nombre) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Nueva fecha de vencimiento</label>' +
+            '<input type="date" name="vence" value="' + fecha(30) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Monto pagado</label>' +
+            '<input type="number" step="0.01" name="monto" value="' + texto(c.precio) + '">' +
+          '</div>' +
+          '<div>' +
+            '<label>Método</label>' +
+            '<select name="metodo">' +
+              '<option>Yape</option>' +
+              '<option>Plin</option>' +
+              '<option>Transferencia</option>' +
+              '<option>Efectivo</option>' +
+              '<option>Otro</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>',
+        function(data) {
+          c.vence = data.vence;
+
+          estado.pagos.push({
+            id: crearId(),
+            fecha: fecha(0),
+            clienteId: c.id,
+            monto: data.monto,
+            metodo: data.metodo,
+            detalle: "Renovación de " + c.servicio
+          });
+
+          guardar();
+          cerrarModal();
+          render();
+        }
+      );
+    }
+
+    function whatsapp(id) {
+      var c = null;
+
+      for (var i = 0; i < estado.clientes.length; i++) {
+        if (estado.clientes[i].id === id) c = estado.clientes[i];
+      }
+
+      if (!c) return;
+
+      var tel = String(c.telefono || "").replace(/\D/g, "");
+
+      if (!tel) {
+        alert("Este cliente no tiene teléfono registrado.");
+        return;
+      }
+
+      var mensaje = "Hola " + c.nombre + ", te recordamos que tu servicio " + c.servicio + " vence el " + c.vence + ". Puedes renovar para continuar activo.";
+      window.open("https://wa.me/" + tel + "?text=" + encodeURIComponent(mensaje), "_blank");
+    }
+
+    function eliminarCliente(id) {
+      if (!confirm("¿Eliminar este cliente?")) return;
+      estado.clientes = estado.clientes.filter(function(c) {
+        return c.id !== id;
+      });
+      guardar();
       render();
-    });
-  }
-
-  function sendWhatsApp(id) {
-    const c = state.clients.find(x => x.id === id);
-    if (!c) return;
-
-    const phone = String(c.phone || "").replace(/\D/g, "");
-    if (!phone) {
-      alert("Este cliente no tiene teléfono registrado.");
-      return;
     }
 
-    const message = `Hola ${c.name}, te recordamos que tu servicio ${c.service} vence el ${c.end}. Puedes realizar tu renovación para continuar activo.`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
-  }
-
-  function deleteClient(id) {
-    if (!confirm("¿Eliminar este cliente?")) return;
-    state.clients = state.clients.filter(c => c.id !== id);
-    saveState();
-    render();
-  }
-
-  function deleteAccount(id) {
-    if (!confirm("¿Eliminar esta cuenta?")) return;
-    state.accounts = state.accounts.filter(a => a.id !== id);
-    saveState();
-    render();
-  }
-
-  function deletePayment(id) {
-    if (!confirm("¿Eliminar este pago?")) return;
-    state.payments = state.payments.filter(p => p.id !== id);
-    saveState();
-    render();
-  }
-
-  function saveSettings() {
-    state.settings.business = document.getElementById("setBusiness").value;
-    state.settings.admin = document.getElementById("setAdmin").value;
-    state.settings.currency = document.getElementById("setCurrency").value;
-    state.settings.phone = document.getElementById("setPhone").value;
-    saveState();
-    render();
-  }
-
-  function resetData() {
-    if (!confirm("Esto borrará clientes, cuentas y pagos. ¿Continuar?")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state = loadState();
-    render();
-  }
-
-  function exportCSV(type) {
-    let rows = [];
-
-    if (type === "clientes") {
-      rows = [
-        ["Nombre", "Telefono", "Servicio", "Cuenta", "Inicio", "Vence", "Precio", "Notas"],
-        ...state.clients.map(c => [
-          c.name, c.phone, c.service, accountName(c.accountId), c.start, c.end, c.price, c.notes
-        ])
-      ];
+    function eliminarCuenta(id) {
+      if (!confirm("¿Eliminar esta cuenta?")) return;
+      estado.cuentas = estado.cuentas.filter(function(a) {
+        return a.id !== id;
+      });
+      guardar();
+      render();
     }
 
-    if (type === "cuentas") {
-      rows = [
-        ["Servicio", "Correo", "Contraseña", "Perfil", "PIN", "Pantallas", "Vence", "Costo", "Notas"],
-        ...state.accounts.map(a => [
-          a.service, a.email, a.password, a.profile, a.pin, a.screens, a.expiry, a.cost, a.notes
-        ])
-      ];
+    function eliminarPago(id) {
+      if (!confirm("¿Eliminar este pago?")) return;
+      estado.pagos = estado.pagos.filter(function(p) {
+        return p.id !== id;
+      });
+      guardar();
+      render();
     }
 
-    if (type === "pagos") {
-      rows = [
-        ["Fecha", "Cliente", "Monto", "Metodo", "Detalle"],
-        ...state.payments.map(p => [
-          p.date, clientName(p.clientId), p.amount, p.method, p.detail
-        ])
-      ];
+    function guardarConfig() {
+      estado.config.negocio = document.getElementById("cfgNegocio").value;
+      estado.config.admin = document.getElementById("cfgAdmin").value;
+      estado.config.moneda = document.getElementById("cfgMoneda").value;
+      guardar();
+      render();
     }
 
-    const csv = rows.map(row =>
-      row.map(cell => `"${String(cell ?? "").replaceAll('"', '""')}"`).join(",")
-    ).join("\n");
+    function borrarTodo() {
+      if (!confirm("Esto borrará todos los clientes, cuentas y pagos. ¿Continuar?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(AUTH_KEY);
+      estado = datosIniciales();
+      guardar();
+      render();
+    }
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${type}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+    function exportarCSV(tipo) {
+      var filas = [];
 
-  render();
-</script>
+      if (tipo === "clientes") {
+        filas.push(["Nombre", "Telefono", "Servicio", "Cuenta", "Inicio", "Vence", "Precio", "Notas"]);
+        estado.clientes.forEach(function(c) {
+          filas.push([c.nombre, c.telefono, c.servicio, cuentaNombre(c.cuentaId), c.inicio, c.vence, c.precio, c.notas]);
+        });
+      }
+
+      if (tipo === "cuentas") {
+        filas.push(["Servicio", "Correo", "Clave", "Perfil", "PIN", "Pantallas", "Vence", "Costo", "Notas"]);
+        estado.cuentas.forEach(function(a) {
+          filas.push([a.servicio, a.correo, a.clave, a.perfil, a.pin, a.pantallas, a.vence, a.costo, a.notas]);
+        });
+      }
+
+      if (tipo === "pagos") {
+        filas.push(["Fecha", "Cliente", "Monto", "Metodo", "Detalle"]);
+        estado.pagos.forEach(function(p) {
+          filas.push([p.fecha, clienteNombre(p.clienteId), p.monto, p.metodo, p.detalle]);
+        });
+      }
+
+      var csv = filas.map(function(fila) {
+        return fila.map(function(celda) {
+          return '"' + String(celda == null ? "" : celda).replace(/"/g, '""') + '"';
+        }).join(",");
+      }).join("\n");
+
+      var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = tipo + ".csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.iniciarSesion = iniciarSesion;
+    window.cerrarSesion = cerrarSesion;
+    window.ir = ir;
+    window.filtrar = filtrar;
+    window.formCliente = formCliente;
+    window.formCuenta = formCuenta;
+    window.formPago = formPago;
+    window.renovarCliente = renovarCliente;
+    window.whatsapp = whatsapp;
+    window.eliminarCliente = eliminarCliente;
+    window.eliminarCuenta = eliminarCuenta;
+    window.eliminarPago = eliminarPago;
+    window.guardarConfig = guardarConfig;
+    window.borrarTodo = borrarTodo;
+    window.exportarCSV = exportarCSV;
+    window.cerrarModal = cerrarModal;
+
+    render();
+  </script>
 </body>
 </html>
